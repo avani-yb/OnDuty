@@ -1,0 +1,60 @@
+name: onduty
+description: "OnDuty - Mise en relation expéditeurs/transporteurs au Cameroun"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Navigation
+  go_router: ^18.0.0
+
+  # State management
+  flutter_riverpod: ^2.5.0
+
+  # HTTP client
+  dio: ^5.5.0
+
+  # Stockage sécurisé (JWT tokens)
+  #flutter_secure_storage: ^11.0.0
+  flutter_secure_storage: ^9.2.4  
+     
+
+  # Localisation
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.3
+
+  # UI Utils
+  cupertino_icons: ^1.0.8
+
+  # Images
+  cached_network_image: ^4.0.0
+
+  # Permissions (camera, location)
+  #permission_handler: ^13.0.1
+  permission_handler: ^11.4.0
+
+  # Video compression
+
+  # Image picker
+  image_picker: ^1.1.2
+
+  # Shared preferences
+  shared_preferences: ^2.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/images/

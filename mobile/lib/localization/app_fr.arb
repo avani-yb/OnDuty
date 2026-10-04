@@ -1,0 +1,410 @@
+{
+  "@@locale": "fr",
+  "appTitle": "OnDuty",
+  "welcome": "Bienvenue sur OnDuty",
+  "getStarted": "Commencer",
+  "login": "Connexion",
+  "register": "Inscription",
+  "email": "Email",
+  "phone": "Téléphone",
+  "password": "Mot de passe",
+  "confirmPassword": "Confirmer le mot de passe",
+  "forgotPassword": "Mot de passe oublié ?",
+  "name": "Nom",
+  "firstName": "Prénom",
+  "logout": "Déconnexion",
+  "settings": "Paramètres",
+  "profile": "Profil",
+  "language": "Langue",
+  "theme": "Thème",
+  "lightTheme": "Thème clair",
+  "darkTheme": "Thème sombre",
+  "systemTheme": "Système",
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "edit": "Modifier",
+  "home": "Accueil",
+  "activity": "Activité",
+  "trips": "Trajets",
+  "shipments": "Expéditions",
+  "newShipment": "Nouvelle expédition",
+  "newTrip": "Nouveau trajet",
+  "origin": "Origine",
+  "destination": "Destination",
+  "date": "Date",
+  "weight": "Poids (kg)",
+  "description": "Description",
+  "video": "Vidéo",
+  "price": "Prix",
+  "capacity": "Capacité disponible",
+  "vehicleType": "Type de véhicule",
+  "licensePlate": "Immatriculation",
+  "brand": "Marque",
+  "model": "Modèle",
+  "maxWeight": "Capacité max (kg)",
+  "search": "Rechercher",
+  "filter": "Filtrer",
+  "noResults": "Aucun résultat",
+  "loading": "Chargement...",
+  "error": "Erreur",
+  "retry": "Réessayer",
+  "confirm": "Confirmer",
+  "yes": "Oui",
+  "no": "Non",
+  "ok": "OK",
+  "next": "Suivant",
+  "back": "Retour",
+  "skip": "Passer",
+  "brandingStep1": "Des véhicules roulent à vide",
+  "brandingStep1Desc": "Des milliers de trajets sont effectués chaque jour avec des véhicules vides.",
+  "brandingStep2": "Matching intelligent + paiement sécurisé",
+  "brandingStep2Desc": "OnDuty connecte expéditeurs et transporteurs avec un matching intelligent et un paiement par escrow.",
+  "brandingStep3": "Confiance : CNI, contrôle IA, suivi temps réel",
+  "brandingStep3Desc": "Vérification d'identité, contrôle IA des colis, suivi en temps réel pour votre sécurité.",
+  "becomeTransporter": "Devenir transporteur",
+  "verifyCNI": "Vérifier ma CNI",
+  "myTrips": "Mes trajets",
+  "myShipments": "Mes expéditions",
+  "notifications": "Notifications",
+  "help": "Aide",
+  "about": "À propos",
+  "terms": "Conditions d'utilisation",
+  "privacy": "Politique de confidentialité",
+  "version": "Version",
+  "logoutConfirm": "Êtes-vous sûr de vouloir vous déconnecter ?",
+  "deleteAccount": "Supprimer mon compte",
+  "deleteAccountConfirm": "Cette action est irréversible. Êtes-vous sûr ?",
+  "shipmentCreated": "Expédition créée avec succès",
+  "tripCreated": "Trajet créé avec succès",
+  "paymentSuccess": "Paiement effectué avec succès",
+  "paymentPending": "Paiement en attente",
+  "paymentFailed": "Échec du paiement",
+  "verificationPending": "Vérification en attente",
+  "verificationSuccess": "Vérification validée",
+  "verificationRejected": "Vérification rejetée",
+  "matchingFound": "Correspondances trouvées",
+  "noMatching": "Aucune correspondance",
+  "selectTrip": "Sélectionner ce trajet",
+  "tripSelected": "Trajet sélectionné",
+  "confirmDelivery": "Confirmer la réception",
+  "deliveryConfirmed": "Réception confirmée",
+  "rateTransporter": "Noter le transporteur",
+  "rating": "Note",
+  "comment": "Commentaire",
+  "submit": "Envoyer",
+  "camera": "Caméra",
+  "gallery": "Galerie",
+  "takePhoto": "Prendre une photo",
+  "chooseVideo": "Choisir une vidéo",
+  "recordVideo": "Enregistrer une vidéo",
+  "upload": "Télécharger",
+  "uploading": "Téléchargement...",
+  "uploadSuccess": "Téléchargement réussi",
+  "uploadFailed": "Échec du téléchargement",
+  "networkError": "Erreur de connexion",
+  "serverError": "Erreur serveur",
+  "unauthorized": "Non autorisé",
+  "sessionExpired": "Session expirée",
+  "pleaseLogin": "Veuillez vous connecter",
+  "fillAllFields": "Veuillez remplir tous les champs",
+  "passwordsDontMatch": "Les mots de passe ne correspondent pas",
+  "invalidEmail": "Email invalide",
+  "invalidPhone": "Numéro de téléphone invalide",
+  "weakPassword": "Mot de passe trop faible",
+  "accountExists": "Un compte existe déjà avec cet email/téléphone",
+  "accountCreated": "Compte créé avec succès",
+  "verificationCodeSent": "Code de vérification envoyé",
+  "invalidCode": "Code invalide",
+  "codeExpired": "Code expiré",
+  "resendCode": "Renvoyer le code",
+  "changePassword": "Changer le mot de passe",
+  "currentPassword": "Mot de passe actuel",
+  "newPassword": "Nouveau mot de passe",
+  "passwordChanged": "Mot de passe modifié",
+  "profileUpdated": "Profil mis à jour",
+  "photoUpdated": "Photo mise à jour",
+  "cniVerified": "CNI vérifiée",
+  "cniRejected": "CNI rejetée",
+  "vehicleAdded": "Véhicule ajouté",
+  "vehicleUpdated": "Véhicule mis à jour",
+  "vehicleDeleted": "Véhicule supprimé",
+  "tripPublished": "Trajet publié",
+  "tripCancelled": "Trajet annulé",
+  "shipmentCancelled": "Expédition annulée",
+  "disputeCreated": "Litige créé",
+  "disputeResolved": "Litige résolu",
+  "incidentReported": "Incident signalé",
+  "aiRejectedTitle": "Demande refusée par le contrôle IA",
+  "aiRejectedHint": "Vous pouvez filmer à nouveau l'article ou corriger la description, puis renvoyer la demande.",
+  "cniFrontTitle": "Photo de la CNI (recto)",
+  "cniFrontHint": "Posez votre CNI à plat, bien éclairée, sans reflet, et cadrez-la entièrement.",
+  "cniBackTitle": "Photo de la CNI (verso)",
+  "cniBackHint": "Retournez votre CNI et prenez le verso dans les mêmes conditions.",
+  "selfieTitle": "Selfie de vérification",
+  "selfieHint": "Prenez un selfie de face, visage bien visible et éclairé, sans lunettes ni chapeau.",
+  "tapToTakePhoto": "Appuyez pour prendre une photo",
+  "retakePhoto": "Reprendre la photo",
+  "submitForVerification": "Soumettre pour vérification",
+  "kycConsent": "En soumettant, vous acceptez que ces photos soient utilisées uniquement pour vérifier votre identité. Elles sont conservées de façon sécurisée et ne sont jamais visibles par les autres utilisateurs.",
+  "refreshStatus": "Actualiser le statut",
+  "startNewVerification": "Recommencer la vérification",
+  "courseAwaitingYourDecision": "En attente de votre décision",
+  "courseAwaitingTransporter": "En attente du transporteur",
+  "courseProposalSent": "Proposition envoyée",
+  "courseProposalReceived": "Proposition à valider",
+  "courseAwaitingPayment": "En attente de paiement",
+  "coursePaid": "Payée",
+  "courseDeparted": "Départ",
+  "courseOnTheWay": "En route",
+  "courseArrived": "Arrivée",
+  "courseDelivered": "Livrée",
+  "courseCancelled": "Annulée",
+  "courseInDispute": "En litige",
+  "tripActive": "Actif",
+  "tripInProgress": "En cours",
+  "tripPast": "Passé",
+  "tripFull": "Complet",
+  "helloShort": "Bonjour !",
+  "homeSubtitle": "On gère comment aujourd'hui ?",
+  "newShipmentSubtitle": "Envoyer un colis",
+  "newTripSubtitle": "Publier un trajet et transporter des colis",
+  "recentActivity": "Mes activités récentes",
+  "noActivityYet": "Aucune activité pour le moment.",
+  "noNotifications": "Aucune notification pour le moment.",
+  "markAllRead": "Tout marquer lu",
+  "tabCourses": "Courses",
+  "tabMyRequests": "Mes demandes",
+  "roleCarrier": "Transporteur",
+  "roleRecipient": "Destinataire",
+  "roleSender": "Expéditeur",
+  "noCoursesYet": "Aucune course pour le moment.",
+  "noRequestsYet": "Aucune demande pour le moment.",
+  "requestHasCourse": "Course en cours",
+  "requestPublished": "Publiée",
+  "requestContested": "Contestée",
+  "requestRejected": "Rejetée",
+  "requestUnderReview": "Contrôle en cours",
+  "contestHint": "Si vous pensez que l'IA s'est trompée, vous pouvez contester : un administrateur examinera votre demande.",
+  "contestRejection": "Contester le rejet",
+  "contestSent": "Contestation envoyée : un administrateur va examiner votre demande.",
+  "contestPending": "Contestation en cours d'examen par l'administrateur.",
+  "contestConfirmed": "L'administrateur a confirmé le rejet.",
+  "requestDetailTitle": "Ma demande",
+  "deleteRequestTitle": "Supprimer cette demande ?",
+  "deleteRequestBody": "Elle ne sera plus visible par les transporteurs.",
+  "requestDeleted": "Demande supprimée",
+  "proposedPrice": "Prix proposé",
+  "recipientPhone": "Numéro du destinataire",
+  "viewCourse": "Voir la course",
+  "viewCompatibleTrips": "Voir les trajets compatibles",
+  "editRequestTitle": "Modifier ma demande",
+  "editLimitedWithCourse": "Une course est en cours : seuls la date, le prix (tant que le transporteur n'a pas répondu) et le numéro du destinataire peuvent être modifiés.",
+  "invalidNumber": "Nombre invalide",
+  "priceYouOffer": "Somme que vous êtes prêt à payer (FCFA)",
+  "recipientPhoneOptional": "Numéro du destinataire (facultatif)",
+  "refilmItem": "Filmer à nouveau l'article",
+  "newVideoReady": "Nouvelle vidéo prête",
+  "editTriggersAiCheck": "Une nouvelle description ou une nouvelle vidéo relance le contrôle IA.",
+  "requestUpdated": "Demande modifiée",
+  "recipientPhoneHint": "S'il est inscrit sur OnDuty, le destinataire suivra la course et pourra confirmer la réception. Sinon, c'est vous qui confirmerez.",
+  "aiSuccessTitle": "Demande d'expédition créée avec succès",
+  "aiSuccessBody": "Votre colis a passé le contrôle IA. Souhaitez-vous voir les trajets compatibles ?",
+  "aiSuccessSeeTrips": "Trajets",
+  "aiSuccessWait": "Attendre",
+  "aiSuccessWaitHint": "Votre demande reste visible par les transporteurs : vous serez notifié dès que l'un d'eux la choisira.",
+  "courseDetailTitle": "Détail de la course",
+  "refuseProposalTitle": "Refuser la proposition ?",
+  "refuseProposalBody": "Votre demande redeviendra visible par les autres transporteurs.",
+  "refuse": "Refuser",
+  "cancelCourseTitle": "Annuler la course ?",
+  "cancelCourseBody": "Si vous avez déjà payé, le prix de la course vous sera remboursé sur votre Mobile Money. La commission OnDuty et les frais de paiement ne sont pas remboursés.",
+  "confirmCancellation": "Confirmer l'annulation",
+  "proposalRefused": "Proposition refusée",
+  "courseCancelledMessage": "Course annulée",
+  "proposeOtherPrice": "Proposer un autre prix",
+  "amountFcfa": "Montant (FCFA)",
+  "send": "Envoyer",
+  "proposalSentMessage": "Proposition envoyée au client",
+  "reportIncident": "Signaler un incident",
+  "incidentHint": "Décrivez ce qui se passe",
+  "cancelledByTripDeletion": "Le transporteur a supprimé son trajet : cette course est annulée.",
+  "itemType": "Type",
+  "itemBrand": "Marque",
+  "itemColor": "Couleur",
+  "itemCondition": "État",
+  "itemContainer": "Contenant",
+  "aiVerifiedDetails": "Détails vérifiés par l'IA",
+  "agreedPrice": "Prix de la course",
+  "priceInfoCarrierDecide": "Acceptez ce prix ou proposez-en un autre au client.",
+  "priceInfoWaitingCarrier": "Le transporteur doit accepter votre prix ou en proposer un autre.",
+  "priceInfoWaitingClient": "En attente de la réponse du client.",
+  "priceInfoPayNow": "Le prix est convenu : vous pouvez payer. Les fonds restent bloqués jusqu'à la livraison.",
+  "priceInfoWaitingPayment": "En attente du paiement du client.",
+  "acceptProposal": "Accepter la proposition",
+  "proposalAccepted": "Proposition acceptée : vous pouvez payer",
+  "payNow": "Payer maintenant",
+  "acceptReservation": "Accepter la réservation",
+  "reservationAccepted": "Réservation acceptée : le client est prévenu",
+  "markDeparted": "J'ai récupéré le colis (départ)",
+  "markOnTheWay": "Colis en route",
+  "markArrived": "Colis arrivé à destination",
+  "statusUpdated": "Statut mis à jour : le client est prévenu",
+  "confirmReception": "Confirmer la réception",
+  "confirmReceptionBody": "Confirmez-vous avoir reçu le colis ? Le paiement sera alors versé au transporteur.",
+  "receptionConfirmed": "Réception confirmée : le transporteur va être payé",
+  "refuseProposal": "Refuser la proposition",
+  "cancelCourse": "Annuler la course",
+  "paymentDone": "Paiement effectué",
+  "paymentDoneBody": "Les fonds sont sécurisés : ils seront versés au transporteur une fois la réception confirmée.",
+  "paymentRefunded": "Paiement remboursé",
+  "tripPrice": "Prix de la course",
+  "paymentFees": "Frais de paiement",
+  "totalToPay": "Total à payer",
+  "mobileMoneyNumber": "Numéro MTN MoMo ou Orange Money",
+  "invalidMobileMoneyNumber": "Numéro invalide : 9 chiffres commençant par 6",
+  "mobileMoneyHint": "Vous recevrez une demande de validation sur ce téléphone.",
+  "escrowInfo": "Les fonds restent bloqués par OnDuty et ne sont versés au transporteur qu'après confirmation de la réception.",
+  "validateOnPhone": "Validez le paiement sur votre téléphone",
+  "validateOnPhoneBody": "Entrez votre code secret Mobile Money pour confirmer.",
+  "paymentStillPending": "Toujours en attente. Si vous avez validé, vérifiez à nouveau dans un instant.",
+  "iValidatedCheck": "J'ai validé : vérifier",
+  "backToCourse": "Retour à la course",
+  "noPaymentsYet": "Aucun paiement pour le moment.",
+  "paymentHistory": "Historique des paiements",
+  "noTripsYet": "Aucun trajet publié pour le moment.",
+  "deleteTripTitle": "Supprimer ce trajet ?",
+  "deleteTripBodyEmpty": "Cette action est définitive.",
+  "tripDeleted": "Trajet supprimé",
+  "tripUpdated": "Trajet modifié",
+  "tripDetailTitle": "Mon trajet",
+  "tripNotEditable": "Ce trajet n'est plus actif : il ne peut plus être modifié ni supprimé.",
+  "tripCourses": "Courses de ce trajet",
+  "noCourseOnTrip": "Aucune course pour ce trajet.",
+  "departureDate": "Départ",
+  "totalCapacity": "Capacité totale",
+  "bookedCapacity": "Déjà réservé",
+  "remainingCapacity": "Disponible",
+  "compatibleRequests": "Voir les demandes compatibles",
+  "editTrip": "Modifier le trajet",
+  "deleteTrip": "Supprimer le trajet",
+  "youPickedThisRequest": "choisie par vous",
+  "editTripCapacityOnly": "Ce trajet a déjà des courses : seule la capacité peut être modifiée. Pour changer la date ou l'itinéraire, supprimez le trajet.",
+  "totalCapacityKg": "Capacité totale (kg)",
+  "requestPickedMessage": "Proposition envoyée : le client doit l'accepter avant de payer.",
+  "noCompatibleRequests": "Aucune demande compatible avec ce trajet pour le moment.",
+  "compatibleRequestsTitle": "Demandes compatibles",
+  "pickThisRequest": "Choisir cette demande",
+  "clientMustAccept": "Le client sera notifié et devra accepter avant de payer.",
+  "mobileMoneyPayoutNumber": "Numéro Mobile Money",
+  "mobileMoneyPayoutHint": "Numéro MTN MoMo ou Orange Money qui reçoit vos paiements de courses et vos remboursements. Laissez vide pour utiliser le téléphone du compte.",
+  "mobileMoneyNumberSaved": "Numéro Mobile Money enregistré",
+  "mobileMoneyDefaultAccountPhone": "Téléphone du compte (par défaut)",
+  "wishedDate": "Souhaitée le {date}",
+  "@wishedDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "keepClientPrice": "Garder le prix du client ({price})",
+  "@keepClientPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTripBodyWithCourses": "{count} course(s) seront annulées. Les clients ayant payé seront remboursés du prix de la course et tous seront prévenus. Votre note de fiabilité baissera de {points} points.",
+  "@deleteTripBodyWithCourses": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "points": {
+        "type": "String"
+      }
+    }
+  },
+  "tripDeletedWithCourses": "Trajet supprimé : {count} course(s) annulée(s), clients prévenus.",
+  "@tripDeletedWithCourses": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "capacityBelowBooked": "La capacité ne peut pas être inférieure aux {kg} kg déjà réservés.",
+  "@capacityBelowBooked": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "remainingKg": "{kg} kg disponibles",
+  "@remainingKg": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "onDutyCommission": "Commission OnDuty ({rate} %)",
+  "@onDutyCommission": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "payAmount": "Payer {amount}",
+  "@payAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "validateOnPhoneUssd": "Entrez votre code secret Mobile Money pour confirmer. Rien reçu ? Composez {code}.",
+  "@validateOnPhoneUssd": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "priceInfoCarrierPickedYou": "Ce transporteur a choisi votre demande (vous proposiez {price}). Acceptez pour passer au paiement, ou refusez.",
+  "@priceInfoCarrierPickedYou": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "priceInfoCarrierCounter": "Le transporteur propose ce prix (vous proposiez {price}). Acceptez-vous ?",
+  "@priceInfoCarrierCounter": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "recipientIsMember": "Destinataire inscrit sur OnDuty : {name}",
+  "@recipientIsMember": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "helloName": "Bonjour {name}",
+  "@helloName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
+}

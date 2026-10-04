@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: onduty_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: onduty_user
+      POSTGRES_PASSWORD: onduty_password_secure
+      POSTGRES_DB: onduty_local_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: onduty_redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:

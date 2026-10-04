@@ -1,0 +1,26 @@
+# Environnement virtuel (Python)
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Fichiers de configuration sensibles
+.env
+!.env.example
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+
+# Clés de compte de service (Google Cloud, Firebase...) — ne jamais versionner
+*.json.key
+backend/secrets/
+backend/*-credentials.json
+backend/service-account*.json
+
+# Médias uploadés (vidéos de contrôle, documents CNI)
+backend/media/
+backend/private_media/
+backend/staticfiles/
