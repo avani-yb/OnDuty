@@ -155,6 +155,9 @@ class AuthService {
       final response = await _dio.post('/token/refresh/', data: {'refresh': refresh});
       final access = response.data['access'] as String;
       await _storage.write(key: _accessTokenKey, value: access);
+      // Le serveur fait tourner les jetons de rafraîchissement : on garde le nouveau.
+      final nouveauRefresh = response.data['refresh'] as String?;
+      if (nouveauRefresh != null) await _storage.write(key: _refreshTokenKey, value: nouveauRefresh);
       return true;
     } catch (_) {
       return false;

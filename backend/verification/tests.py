@@ -138,12 +138,18 @@ class SoumissionSmileTests(BaseKYC):
 
     @mock.patch.object(smile_identity, "soumettre", side_effect=ServiceIndisponible("smile_identity", "panne"))
     def test_panne_smile_503_sans_trace(self, _):
+        import os
+
+        def fichiers():
+            return {os.path.join(d, n) for d, _, noms in os.walk(DOSSIER_PRIVE) for n in noms}
+
+        avant = fichiers()
         reponse = self.soumettre()
         self.assertEqual(reponse.status_code, 503)
         self.assertIn("indisponible", reponse.data["detail"])
         self.assertEqual(Verification.objects.count(), 0)
-        fichiers = [f for _, _, noms in __import__("os").walk(DOSSIER_PRIVE) for f in noms]
-        self.assertEqual(fichiers, [])
+        # Les photos envoyées ont été effacées (aucun nouveau fichier).
+        self.assertEqual(fichiers() - avant, set())
 
     @mock.patch.object(smile_identity, "soumettre", return_value="onduty-1-abcd1234")
     def test_document_vehicule_reste_manuel(self, soumettre):

@@ -1,0 +1,37 @@
+{% load static %}<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titre %}Administration{% endblock %} — OnDuty</title>
+  <link rel="stylesheet" href="{% static 'gestion/gestion.css' %}">
+  {% block tete %}{% endblock %}
+</head>
+<body>
+<div class="page">
+  <nav class="menu">
+    <div class="marque">
+      <img src="{% static 'gestion/logo_symbole.png' %}" alt="">
+      <span>OnDuty Admin</span>
+    </div>
+    <a href="{% url 'gestion:tableau_de_bord' %}" class="{% if menu == 'tableau' %}actif{% endif %}">Tableau de bord</a>
+    <a href="{% url 'gestion:utilisateurs' %}" class="{% if menu == 'utilisateurs' %}actif{% endif %}">Utilisateurs</a>
+    <a href="{% url 'gestion:litiges' %}" class="{% if menu == 'litiges' %}actif{% endif %}">
+      Litiges
+      {% if nb_litiges_a_traiter %}<span class="compteur">{{ nb_litiges_a_traiter }}</span>{% endif %}
+    </a>
+    <form method="post" action="{% url 'gestion:deconnexion' %}">
+      {% csrf_token %}
+      <button type="submit">Se déconnecter</button>
+    </form>
+  </nav>
+  <main class="contenu">
+    {% for message in messages %}
+      <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+    {% block contenu %}{% endblock %}
+  </main>
+</div>
+{% block scripts %}{% endblock %}
+</body>
+</html>

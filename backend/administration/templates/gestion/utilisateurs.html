@@ -1,0 +1,46 @@
+{% extends "gestion/base.html" %}
+{% load gestion_tags %}
+{% block titre %}Utilisateurs{% endblock %}
+{% block contenu %}
+<h1>Utilisateurs</h1>
+<p class="sous-titre">{{ page.paginator.count }} compte(s)</p>
+
+<form class="barre-filtres" method="get">
+  <input type="search" name="q" value="{{ recherche }}" placeholder="Nom, prénom, téléphone ou email">
+  <input type="hidden" name="filtre" value="{{ filtre }}">
+  <button type="submit" class="secondaire">Rechercher</button>
+  <div class="onglets">
+    <a href="?filtre=tous&q={{ recherche|urlencode }}" class="{% if filtre == 'tous' %}actif{% endif %}">Tous</a>
+    <a href="?filtre=clients&q={{ recherche|urlencode }}" class="{% if filtre == 'clients' %}actif{% endif %}">Clients seulement</a>
+    <a href="?filtre=transporteurs&q={{ recherche|urlencode }}" class="{% if filtre == 'transporteurs' %}actif{% endif %}">Transporteurs</a>
+    <a href="?filtre=bloques&q={{ recherche|urlencode }}" class="{% if filtre == 'bloques' %}actif{% endif %}">Bloqués</a>
+  </div>
+</form>
+
+<div class="carte">
+  {% if page.object_list %}
+  <div style="overflow-x:auto">
+  <table>
+    <thead>
+      <tr><th>Nom</th><th>Téléphone</th><th>Rôle</th><th>Fiabilité</th><th>Statut</th><th>Inscrit le</th></tr>
+    </thead>
+    <tbody>
+    {% for u in page.object_list %}
+      <tr class="cliquable" onclick="location.href='{% url 'gestion:utilisateur' u.pk %}'">
+        <td><a href="{% url 'gestion:utilisateur' u.pk %}">{{ u.prenom }} {{ u.nom }}</a></td>
+        <td>{{ u.telephone }}</td>
+        <td>{% if u.est_transporteur %}Transporteur{% else %}Client{% endif %}</td>
+        <td>{{ u.score_fiabilite }}/100</td>
+        <td><span class="pastille {{ u.statut_compte|couleur }}">{% if u.statut_compte == 'suspendu' %}Bloqué{% else %}Actif{% endif %}</span></td>
+        <td>{{ u.date_creation|date:"d/m/Y" }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% include "gestion/_pagination.html" %}
+  {% else %}
+  <p class="vide">Aucun utilisateur ne correspond.</p>
+  {% endif %}
+</div>
+{% endblock %}

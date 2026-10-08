@@ -949,4 +949,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String helloName(String name) => 'Hello $name';
+
+  @override
+  String get positionJustNow => 'Position just now';
+
+  @override
+  String get waitingFirstPosition => 'The carrier has left: their position will appear as soon as their phone sends it.';
+
+  @override
+  String get locationSharedTitle => 'Location shared';
+
+  @override
+  String get locationSharedBody => 'The client follows your location until delivery.';
+
+  @override
+  String get locationPermissionTitle => 'Share your location';
+
+  @override
+  String get locationPermissionBody => 'During transport, the client sees your location on a map. For this to work with your phone in your pocket, choose "Allow all the time" when asked.';
+
+  @override
+  String get allow => 'Allow';
+
+  @override
+  String get locationPermissionDenied => 'Background location not allowed: it will only be sent while the app is open. You can change this in your phone settings.';
+
+  @override
+  String get cityHint => 'Type the first letters (e.g. Ya)';
+
+  @override
+  String get chooseCityFromList => 'Choose a place from the list';
+
+  @override
+  String positionMinutesAgo(String minutes) => 'Position $minutes min ago';
+
+  @override
+  String positionHoursAgo(String hours) => 'Position $hours h ago';
 }

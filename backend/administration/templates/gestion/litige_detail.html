@@ -1,0 +1,60 @@
+{% extends "gestion/base.html" %}
+{% load gestion_tags %}
+{% block titre %}Litige #{{ litige.pk }}{% endblock %}
+{% block contenu %}
+<p><a href="{% url 'gestion:litiges' %}">← Litiges</a></p>
+<h1>Litige #{{ litige.pk }} <span class="pastille {{ litige.statut|couleur }}">{{ litige.get_statut_display }}</span></h1>
+<p class="sous-titre">Course #{{ course.pk }} · {{ demande.origine }} → {{ demande.destination }}</p>
+
+<div class="carte">
+  <h2>Déclaration</h2>
+  <dl class="infos">
+    <dt>Déclaré par</dt>
+    <dd>
+      <a href="{% url 'gestion:utilisateur' litige.declarant_id %}">{{ litige.declarant.prenom }} {{ litige.declarant.nom }}</a>
+      ({% if litige.declarant_id == course.client_id %}expéditeur{% else %}transporteur{% endif %})
+      le {{ litige.date_declaration|date:"d/m/Y H:i" }}
+    </dd>
+    <dt>Motif</dt><dd>{{ litige.motif|linebreaksbr }}</dd>
+    {% if litige.decision_admin %}
+    <dt>Décision</dt><dd>{{ litige.decision_admin }} <small>({{ litige.date_resolution|date:"d/m/Y H:i" }})</small></dd>
+    {% endif %}
+  </dl>
+</div>
+
+{% if ouvert %}
+<div class="carte">
+  <h2>Décision</h2>
+  {% if litige.statut == 'ouvert' %}
+  <form method="post" action="{% url 'gestion:litige_action' litige.pk 'prendre_en_charge' %}" style="margin-bottom:14px">
+    {% csrf_token %}
+    <button type="submit" class="secondaire">Prendre en charge</button>
+    <small class="sous-titre">Indique aux autres administrateurs que vous examinez ce litige.</small>
+  </form>
+  {% endif %}
+  <form method="post" id="decision">
+    {% csrf_token %}
+    <label for="commentaire"><strong>Commentaire pour les deux parties</strong> (facultatif)</label>
+    <textarea id="commentaire" name="commentaire" placeholder="Expliquez brièvement votre décision"></textarea>
+    <div class="actions" style="margin-top:12px">
+      <button type="submit" class="succes"
+              formaction="{% url 'gestion:litige_action' litige.pk 'valider_livraison' %}"
+              onclick="return confirm('Valider la livraison ? Le prix de la course sera versé au transporteur.')">
+        Livraison validée — verser au transporteur
+      </button>
+      <button type="submit" class="danger"
+              formaction="{% url 'gestion:litige_action' litige.pk 'rembourser' %}"
+              onclick="return confirm('Annuler la course ? Le prix de la course sera remboursé au client.')">
+        Course annulée — rembourser le client
+      </button>
+    </div>
+    <p class="sous-titre" style="margin-top:10px">
+      Le versement ou le remboursement porte sur le prix de la course ({{ course.montant_convenu|fcfa }}) ;
+      la commission et les frais restent acquis à OnDuty.
+    </p>
+  </form>
+</div>
+{% endif %}
+
+{% include "gestion/_fiche_course.html" %}
+{% endblock %}

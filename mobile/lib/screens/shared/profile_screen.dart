@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../services/gps_service.dart';
+import '../../services/push_service.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../theme/app_colors.dart';
 import '../../../utils/error_helper.dart';
@@ -307,7 +309,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           FilledButton(
             onPressed: () async {
               Navigator.pop(dialogContext);
-              await ref.read(authServiceProvider).logout();
+              final auth = ref.read(authServiceProvider);
+              // Ce téléphone ne reçoit plus les notifications du compte et
+              // cesse de partager sa position.
+              await PushService.oublierAppareil(auth);
+              await GpsService.arreter();
+              await auth.logout();
               if (mounted) context.go('/login');
             },
             child: const Text('Déconnexion'),

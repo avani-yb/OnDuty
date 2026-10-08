@@ -1,0 +1,129 @@
+{% load gestion_tags %}
+{# Fiche complète d'une course : tout ce qu'il faut pour arbitrer. #}
+<div class="deux-colonnes">
+  <div class="carte">
+    <h2>Course #{{ course.pk }} <span class="pastille {{ course.statut|couleur }}">{{ course.get_statut_display }}</span></h2>
+    <dl class="infos">
+      <dt>Trajet</dt><dd>{{ demande.origine }} → {{ demande.destination }}</dd>
+      <dt>Expéditeur</dt><dd><a href="{% url 'gestion:utilisateur' course.client_id %}">{{ course.client.prenom }} {{ course.client.nom }}</a> · {{ course.client.telephone }}</dd>
+      <dt>Transporteur</dt><dd><a href="{% url 'gestion:utilisateur' course.transporteur_id %}">{{ course.transporteur.prenom }} {{ course.transporteur.nom }}</a> · {{ course.transporteur.telephone }}</dd>
+      <dt>Destinataire</dt><dd>{% if demande.destinataire %}{{ demande.destinataire.prenom }} {{ demande.destinataire.nom }} · {% endif %}{{ demande.telephone_destinataire|default:"—" }}</dd>
+      <dt>Choisie par</dt><dd>{{ course.get_initiee_par_display }}</dd>
+      <dt>Prix convenu</dt><dd>{{ course.montant_convenu|fcfa }}</dd>
+      <dt>Créée le</dt><dd>{{ course.date_creation|date:"d/m/Y H:i" }}</dd>
+      <dt>Départ réel</dt><dd>{{ course.date_depart_reel|date:"d/m/Y H:i"|default:"—" }}</dd>
+      <dt>Livraison</dt><dd>{{ course.date_livraison|date:"d/m/Y H:i"|default:"—" }}</dd>
+      {% if course.motif_annulation %}<dt>Annulation</dt><dd>{{ course.get_motif_annulation_display }}</dd>{% endif %}
+    </dl>
+  </div>
+
+  <div class="carte">
+    <h2>Colis</h2>
+    <dl class="infos">
+      <dt>Description</dt><dd>{{ demande.description }}</dd>
+      <dt>Poids</dt><dd>{{ demande.poids_estime_kg }} kg</dd>
+      <dt>Date souhaitée</dt><dd>{{ demande.date_souhaitee|date:"d/m/Y" }}</dd>
+      <dt>Vidéo</dt><dd>{% if demande.video %}<a href="{{ demande.video.url }}" target="_blank">Voir la vidéo</a>{% elif demande.video_url %}<a href="{{ demande.video_url }}" target="_blank">Voir la vidéo</a>{% else %}—{% endif %}</dd>
+      <dt>Contrôle IA</dt>
+      <dd>
+        {% if controle %}
+          <span class="pastille {{ controle.verdict|couleur }}">{{ controle.get_verdict_display }}</span>
+          (tentative {{ controle.numero_tentative }}){% if controle.motif_rejet %} — {{ controle.motif_rejet }}{% endif %}
+        {% else %}—{% endif %}
+      </dd>
+      {% if details_visuels %}
+      <dt>Détails vus par l'IA</dt>
+      <dd>{% for cle, valeur in details_visuels.items %}{% if valeur %}{{ cle|capfirst }} : {{ valeur }}{% if not forloop.last %} · {% endif %}{% endif %}{% endfor %}</dd>
+      {% endif %}
+    </dl>
+  </div>
+</div>
+
+<div class="deux-colonnes">
+  <div class="carte">
+    <h2>Paiement</h2>
+    {% if paiement %}
+    <dl class="infos">
+      <dt>Statut</dt><dd><span class="pastille {{ paiement.statut|couleur }}">{{ paiement.get_statut_display }}</span></dd>
+      <dt>Prix de la course</dt><dd>{{ paiement.montant_course|fcfa }}</dd>
+      <dt>Commission OnDuty</dt><dd>{{ paiement.commission|fcfa }}</dd>
+      <dt>Frais CamPay</dt><dd>{{ paiement.frais|fcfa }}</dd>
+      <dt>Total payé</dt><dd><strong>{{ paiement.montant|fcfa }}</strong></dd>
+      <dt>Payé le</dt><dd>{{ paiement.date_paiement|date:"d/m/Y H:i"|default:"—" }}</dd>
+      <dt>Opérateur</dt><dd>{{ paiement.get_methode_display|default:"—" }} · {{ paiement.numero_payeur }}</dd>
+    </dl>
+    {% if versements %}
+    <h2 style="margin-top:16px">Versements</h2>
+    <table>
+      <thead><tr><th>Type</th><th>Montant</th><th>Numéro</th><th>Statut</th></tr></thead>
+      <tbody>
+      {% for v in versements %}
+        <tr>
+          <td>{{ v.get_type_versement_display }}</td>
+          <td>{{ v.montant|fcfa }}</td>
+          <td>{{ v.numero }}</td>
+          <td><span class="pastille {{ v.statut|couleur }}">{{ v.get_statut_display }}</span>{% if v.message_erreur %}<br><small>{{ v.message_erreur }}</small>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+    {% else %}
+    <p class="vide">Pas encore de paiement.</p>
+    {% endif %}
+  </div>
+
+  <div class="carte">
+    <h2>Suivi GPS</h2>
+    {% if trace %}
+      <div id="carte"></div>
+      <p class="sous-titre" style="margin:8px 0 0">Dernière position : {{ derniere_position.2|date:"d/m/Y H:i" }} · {{ trace|length }} point(s)</p>
+    {% else %}
+      <p class="vide">Aucune position reçue pour cette course.</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="deux-colonnes">
+  <div class="carte">
+    <h2>Incidents signalés</h2>
+    {% for i in incidents %}
+      <p><strong>{{ i.date_signalement|date:"d/m/Y H:i" }}</strong> — {{ i.description }}</p>
+    {% empty %}
+      <p class="vide">Aucun incident.</p>
+    {% endfor %}
+  </div>
+  <div class="carte">
+    <h2>Litiges de cette course</h2>
+    {% for l in litiges_course %}
+      <p>
+        <a href="{% url 'gestion:litige' l.pk %}">Litige #{{ l.pk }}</a>
+        <span class="pastille {{ l.statut|couleur }}">{{ l.get_statut_display }}</span>
+        — {{ l.declarant.prenom }} {{ l.declarant.nom }}, {{ l.date_declaration|date:"d/m/Y" }}
+      </p>
+    {% empty %}
+      <p class="vide">Aucun litige.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% if trace %}
+{{ trace|json_script:"donnees-trace" }}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+  (function () {
+    var points = JSON.parse(document.getElementById("donnees-trace").textContent);
+    var carte = L.map("carte");
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19, attribution: "&copy; OpenStreetMap"
+    }).addTo(carte);
+    var ligne = L.polyline(points, { color: "#6F4E37", weight: 4 }).addTo(carte);
+    L.marker(points[points.length - 1]).addTo(carte).bindPopup("Dernière position");
+    if (points.length > 1) { carte.fitBounds(ligne.getBounds(), { padding: [20, 20] }); }
+    else { carte.setView(points[0], 13); }
+  })();
+</script>
+{% endif %}

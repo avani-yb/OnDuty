@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from onduty_backend import localites
+
 from .models import Trajet
 from .services import type_vehicule
 
@@ -71,6 +73,12 @@ class TrajetSerializer(serializers.ModelSerializer):
 
     def get_type_vehicule(self, obj):
         return type_vehicule(obj.transporteur)
+
+    def validate_origine(self, value):
+        return localites.valider(value)
+
+    def validate_destination(self, value):
+        return localites.valider(value)
 
     def validate_capacite_disponible_kg(self, value):
         if value <= 0:

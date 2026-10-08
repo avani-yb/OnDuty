@@ -406,5 +406,31 @@
         "type": "String"
       }
     }
+  },
+  "positionJustNow": "Position à l'instant",
+  "waitingFirstPosition": "Le transporteur est parti : sa position s'affichera dès que son téléphone l'aura envoyée.",
+  "locationSharedTitle": "Position partagée",
+  "locationSharedBody": "Le client suit votre position jusqu'à la livraison.",
+  "locationPermissionTitle": "Partager votre position",
+  "locationPermissionBody": "Pendant le transport, le client voit votre position sur une carte. Pour que cela fonctionne téléphone en poche, choisissez « Toujours autoriser » lorsque le téléphone le demande.",
+  "allow": "Autoriser",
+  "locationPermissionDenied": "Position non autorisée en arrière-plan : elle ne sera envoyée que lorsque l'application est ouverte. Vous pouvez changer cela dans les réglages du téléphone.",
+  "cityHint": "Tapez les premières lettres (ex. Ya)",
+  "chooseCityFromList": "Choisissez une localité dans la liste",
+  "positionMinutesAgo": "Position il y a {minutes} min",
+  "@positionMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "positionHoursAgo": "Position il y a {hours} h",
+  "@positionHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -72,7 +72,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             children: [
               const SizedBox(height: 40),
               Image.asset(
-                'assets/images/logo.png',
+                Theme.of(context).brightness == Brightness.dark
+                    ? 'assets/images/logo_sombre.png'
+                    : 'assets/images/logo_transparent.png',
                 height: 120,
               ),
               const SizedBox(height: 24),

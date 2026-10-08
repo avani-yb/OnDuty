@@ -20,13 +20,16 @@ class TypeCompteFilter(SimpleListFilter):
 
 @admin.action(description="Suspendre les comptes sélectionnés")
 def suspendre_comptes(modeladmin, request, queryset):
-    count = queryset.update(statut_compte=Utilisateur.StatutCompte.SUSPENDU)
+    # Bloqué = aussi désactivé : la connexion et les jetons déjà émis sont refusés.
+    count = queryset.exclude(type_compte=Utilisateur.TypeCompte.ADMIN).update(
+        statut_compte=Utilisateur.StatutCompte.SUSPENDU, is_active=False
+    )
     modeladmin.message_user(request, f"{count} compte(s) suspendu(s).")
 
 
 @admin.action(description="Réactiver les comptes sélectionnés")
 def reactiver_comptes(modeladmin, request, queryset):
-    count = queryset.update(statut_compte=Utilisateur.StatutCompte.ACTIF)
+    count = queryset.update(statut_compte=Utilisateur.StatutCompte.ACTIF, is_active=True)
     modeladmin.message_user(request, f"{count} compte(s) réactivé(s).")
 
 

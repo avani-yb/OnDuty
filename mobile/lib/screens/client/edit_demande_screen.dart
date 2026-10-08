@@ -1,3 +1,4 @@
+import '../../widgets/localite_field.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -184,20 +185,16 @@ class _EditDemandeScreenState extends ConsumerState<EditDemandeScreen> {
                           ),
                         ),
                       const SizedBox(height: 8),
-                      CustomTextField(
+                      LocaliteField(
                         controller: _origine,
                         label: l10n.origin,
-                        prefixIcon: Icons.location_on_outlined,
                         enabled: !_avecCourse,
-                        validator: requis,
                       ),
                       const SizedBox(height: 16),
-                      CustomTextField(
+                      LocaliteField(
                         controller: _destination,
                         label: l10n.destination,
-                        prefixIcon: Icons.location_on_outlined,
                         enabled: !_avecCourse,
-                        validator: requis,
                       ),
                       const SizedBox(height: 16),
                       InkWell(

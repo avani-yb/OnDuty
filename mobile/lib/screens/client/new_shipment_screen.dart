@@ -1,3 +1,4 @@
+import '../../../widgets/localite_field.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -230,20 +231,14 @@ class _NewShipmentScreenState extends ConsumerState<NewShipmentScreen> {
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 16),
-            CustomTextField(
+            LocaliteField(
               controller: _originController,
               label: l10n.origin,
-              hint: 'Ex: Douala',
-              prefixIcon: Icons.location_on_outlined,
-              validator: (v) => v?.isEmpty ?? true ? l10n.fillAllFields : null,
             ),
             const SizedBox(height: 16),
-            CustomTextField(
+            LocaliteField(
               controller: _destinationController,
               label: l10n.destination,
-              hint: 'Ex: Yaoundé',
-              prefixIcon: Icons.location_on_outlined,
-              validator: (v) => v?.isEmpty ?? true ? l10n.fillAllFields : null,
             ),
             const SizedBox(height: 16),
             InkWell(

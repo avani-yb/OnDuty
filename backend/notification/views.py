@@ -55,6 +55,10 @@ class FCMTokenViewSet(viewsets.ModelViewSet):
         device_id = serializer.validated_data.get("device_id", "")
         platform = serializer.validated_data.get("platform", "android")
 
+        # Un même téléphone peut changer de compte : le token ne doit plus
+        # recevoir les notifications de l'ancien compte.
+        FCMToken.objects.filter(token=token_value).exclude(utilisateur=request.user).update(actif=False)
+
         # Mettre à jour si existe, sinon créer
         fcm_token, created = FCMToken.objects.update_or_create(
             utilisateur=request.user,
@@ -68,6 +72,13 @@ class FCMTokenViewSet(viewsets.ModelViewSet):
 
         output_serializer = FCMTokenSerializer(fcm_token)
         return Response(output_serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+
+    @action(detail=False, methods=["post"])
+    def oublier(self, request):
+        """Déconnexion : l'appareil ({"token"}) ne reçoit plus les notifications."""
+        token_value = request.data.get("token", "")
+        nombre = FCMToken.objects.filter(utilisateur=request.user, token=token_value).update(actif=False)
+        return Response({"desactives": nombre}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["post"])
     def desactiver(self, request, pk=None):

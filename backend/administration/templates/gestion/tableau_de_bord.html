@@ -1,0 +1,72 @@
+{% extends "gestion/base.html" %}
+{% load gestion_tags %}
+{% block titre %}Tableau de bord{% endblock %}
+{% block contenu %}
+<h1>Tableau de bord</h1>
+<p class="sous-titre">Activité de la plateforme en temps réel.</p>
+
+<div class="grille">
+  <div class="chiffre">
+    <div class="valeur">{{ chiffres.demandes }}</div>
+    <div class="libelle">Demandes d'expédition</div>
+    <div class="detail">{{ chiffres.demandes_publiees }} publiées · {{ chiffres.demandes_rejetees }} rejetées par l'IA</div>
+  </div>
+  <div class="chiffre">
+    <div class="valeur">{{ chiffres.clients }}</div>
+    <div class="libelle">Clients inscrits</div>
+    <div class="detail">{{ chiffres.comptes_bloques }} compte(s) bloqué(s)</div>
+  </div>
+  <div class="chiffre">
+    <div class="valeur">{{ chiffres.transporteurs }}</div>
+    <div class="libelle">Transporteurs</div>
+    <div class="detail">{{ chiffres.trajets_actifs }} trajet(s) publié(s)</div>
+  </div>
+  <div class="chiffre">
+    <div class="valeur">{{ chiffres.courses_en_cours }}</div>
+    <div class="libelle">Courses en cours</div>
+    <div class="detail">{{ chiffres.courses_livrees }} livrées · {{ chiffres.courses_annulees }} annulées</div>
+  </div>
+  <a class="chiffre {% if chiffres.litiges_ouverts %}alerte{% endif %}" href="{% url 'gestion:litiges' %}">
+    <div class="valeur">{{ chiffres.litiges_ouverts }}</div>
+    <div class="libelle">Litiges à traiter</div>
+  </a>
+  <div class="chiffre">
+    <div class="valeur">{{ chiffres.escrow|fcfa }}</div>
+    <div class="libelle">Bloqué en escrow</div>
+    <div class="detail">À verser aux transporteurs après livraison</div>
+  </div>
+  <div class="chiffre">
+    <div class="valeur">{{ chiffres.commissions|fcfa }}</div>
+    <div class="libelle">Commissions OnDuty</div>
+    <div class="detail">Sur {{ chiffres.volume_paye|fcfa }} payés par les clients</div>
+  </div>
+</div>
+
+<div class="carte">
+  <h2>Courses en cours</h2>
+  {% if courses_en_cours %}
+  <div style="overflow-x:auto">
+  <table>
+    <thead>
+      <tr><th>N°</th><th>Trajet</th><th>Client</th><th>Transporteur</th><th>Prix</th><th>Statut</th><th>Créée le</th></tr>
+    </thead>
+    <tbody>
+    {% for c in courses_en_cours %}
+      <tr class="cliquable" onclick="location.href='{% url 'gestion:course' c.pk %}'">
+        <td><a href="{% url 'gestion:course' c.pk %}">#{{ c.pk }}</a></td>
+        <td>{{ c.demande.origine }} → {{ c.demande.destination }}</td>
+        <td>{{ c.client.prenom }} {{ c.client.nom }}</td>
+        <td>{{ c.transporteur.prenom }} {{ c.transporteur.nom }}</td>
+        <td>{{ c.montant_convenu|fcfa }}</td>
+        <td><span class="pastille {{ c.statut|couleur }}">{{ c.get_statut_display }}</span></td>
+        <td>{{ c.date_creation|date:"d/m/Y H:i" }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <p class="vide">Aucune course en cours.</p>
+  {% endif %}
+</div>
+{% endblock %}

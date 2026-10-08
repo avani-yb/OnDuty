@@ -8,6 +8,7 @@ import '../../theme/app_colors.dart';
 import '../../utils/error_helper.dart';
 import '../../utils/formatters.dart';
 import '../../widgets/common/vehicle_icon.dart';
+import '../../widgets/localite_field.dart';
 
 /// Détail d'un trajet. Sur un trajet « actif » uniquement :
 /// - modifier (tout si aucune course, sinon la capacité seulement) ;
@@ -260,6 +261,7 @@ class _DialogueModificationState extends State<_DialogueModification> {
   late final _capacite = TextEditingController(text: widget.trip.capacityKg.toStringAsFixed(0));
   late DateTime _date = widget.trip.departureDate.toLocal();
   String? _erreur;
+  final _formulaire = GlobalKey<FormState>();
 
   bool get _capaciteSeulement => widget.trip.aDesCourses;
 
@@ -286,6 +288,7 @@ class _DialogueModificationState extends State<_DialogueModification> {
       setState(() => _erreur = l10n.capacityBelowBooked(widget.trip.kgReserves.toStringAsFixed(0)));
       return;
     }
+    if (!_capaciteSeulement && !(_formulaire.currentState?.validate() ?? true)) return;
     final champs = <String, dynamic>{};
     if (capacite != widget.trip.capacityKg) champs['capacite_disponible_kg'] = capacite;
     if (!_capaciteSeulement) {
@@ -302,7 +305,9 @@ class _DialogueModificationState extends State<_DialogueModification> {
     return AlertDialog(
       title: Text(l10n.editTrip),
       content: SingleChildScrollView(
-        child: Column(
+        child: Form(
+          key: _formulaire,
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (_capaciteSeulement)
@@ -311,8 +316,14 @@ class _DialogueModificationState extends State<_DialogueModification> {
                 child: Text(l10n.editTripCapacityOnly, style: Theme.of(context).textTheme.bodySmall),
               ),
             if (!_capaciteSeulement) ...[
-              TextField(controller: _origine, decoration: InputDecoration(labelText: l10n.origin)),
-              TextField(controller: _destination, decoration: InputDecoration(labelText: l10n.destination)),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: LocaliteField(controller: _origine, label: l10n.origin),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: LocaliteField(controller: _destination, label: l10n.destination),
+              ),
               const SizedBox(height: 8),
               ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -327,6 +338,7 @@ class _DialogueModificationState extends State<_DialogueModification> {
               decoration: InputDecoration(labelText: l10n.totalCapacityKg, errorText: _erreur),
             ),
           ],
+          ),
         ),
       ),
       actions: [

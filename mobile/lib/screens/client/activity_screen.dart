@@ -8,7 +8,7 @@ import '../../services/shipment_service.dart';
 import '../../theme/app_colors.dart';
 import '../../utils/error_helper.dart';
 import '../../utils/formatters.dart';
-import '../../widgets/common/vehicle_icon.dart';
+import '../../widgets/common/vehicle_card.dart';
 
 /// Activité : les courses (comme expéditeur, transporteur ou destinataire)
 /// et la liste de mes demandes d'expédition.
@@ -111,20 +111,16 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                 final course = _courses[index];
                 final couleur = couleurStatutCourse(course.statut);
                 final autre = course.estTransporteur ? course.client : course.transporteur;
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  child: ListTile(
-                    onTap: () => _ouvrir('/shipment/${course.id}'),
-                    leading: VehicleBadge(typeVehicule: course.typeVehicule, color: couleur),
-                    title: Text(
-                      '${course.demande['origine'] ?? ''} → ${course.demande['destination'] ?? ''}',
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    subtitle: Text(
-                      '${_libelleRole(l10n, course.role)} · ${autre['prenom'] ?? ''} ${autre['nom'] ?? ''}',
-                    ),
-                    trailing: _Pastille(texte: libelleStatutCourse(l10n, course.statut, role: course.role), couleur: couleur),
+                return CarteVehicule(
+                  typeVehicule: course.typeVehicule,
+                  couleur: couleur,
+                  titre: '${course.demande['origine'] ?? ''} → ${course.demande['destination'] ?? ''}',
+                  sousTitre: '${_libelleRole(l10n, course.role)} · ${autre['prenom'] ?? ''} ${autre['nom'] ?? ''}',
+                  trailing: PastilleStatut(
+                    texte: libelleStatutCourse(l10n, course.statut, role: course.role),
+                    couleur: couleur,
                   ),
+                  onTap: () => _ouvrir('/shipment/${course.id}'),
                 );
               },
             ),

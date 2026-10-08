@@ -4,10 +4,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../localization/app_localizations.dart';
 import '../../services/course_service.dart';
+import '../../services/gps_service.dart';
 import '../../theme/app_colors.dart';
 import '../../utils/error_helper.dart';
 import '../../utils/formatters.dart';
 import '../../widgets/common/vehicle_icon.dart';
+import '../../widgets/suivi_map.dart';
 
 /// Détail d'une course, adapté au rôle de l'utilisateur :
 /// - expéditeur : accepter/refuser une proposition, payer, annuler,
@@ -174,6 +176,9 @@ class _ShipmentDetailScreenState extends ConsumerState<ShipmentDetailScreen> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(16),
                     children: [
+                      if (course.suiviDisponible && !course.estTransporteur)
+                        SuiviMap(courseId: course.id, typeVehicule: course.typeVehicule),
+                      if (course.suiviDisponible && course.estTransporteur) _bandeauPartage(l10n),
                       _carteResume(l10n, course),
                       if (course.detailsVisuels != null) _carteDetailsIA(l10n, course.detailsVisuels!),
                       _carteAutrePartie(l10n, course),
@@ -184,6 +189,34 @@ class _ShipmentDetailScreenState extends ConsumerState<ShipmentDetailScreen> {
                   ),
                 ),
     );
+  }
+
+  /// Rappel au transporteur que sa position est partagée avec le client.
+  Widget _bandeauPartage(AppLocalizations l10n) {
+    return Card(
+      color: AppColors.info.withValues(alpha: 0.08),
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        leading: const Icon(Icons.my_location, color: AppColors.info),
+        title: Text(l10n.locationSharedTitle),
+        subtitle: Text(l10n.locationSharedBody),
+      ),
+    );
+  }
+
+  /// Départ : le partage de position doit être autorisé « Toujours » pour
+  /// fonctionner téléphone en poche.
+  Future<void> _marquerDepart() async {
+    final l10n = AppLocalizations.of(context);
+    final ok = await _confirmer(l10n.locationPermissionTitle, l10n.locationPermissionBody, l10n.allow);
+    if (!ok) return;
+    final autorise = await GpsService.permissionArrierePlan();
+    if (!autorise && mounted) {
+      _message(l10n.locationPermissionDenied, erreur: true);
+      if (!await GpsService.permissionAccordee()) return;
+    }
+    await _agir((svc) => svc.avancerStatut(widget.courseId, 'depart'), l10n.statusUpdated);
+    if (_course?.statut == 'depart') await GpsService.demarrer();
   }
 
   Widget _carteResume(AppLocalizations l10n, Course course) {
@@ -389,8 +422,13 @@ class _ShipmentDetailScreenState extends ConsumerState<ShipmentDetailScreen> {
           'en_route': l10n.markOnTheWay,
           'arrivee': l10n.markArrived,
         }[action]!;
-        principal(Icons.flag_outlined, texte,
-            () => _agir((svc) => svc.avancerStatut(widget.courseId, action), l10n.statusUpdated));
+        principal(
+          Icons.flag_outlined,
+          texte,
+          action == 'depart'
+              ? _marquerDepart
+              : () => _agir((svc) => svc.avancerStatut(widget.courseId, action), l10n.statusUpdated),
+        );
       }
       if (['payee', 'depart', 'en_route', 'arrivee'].contains(s)) {
         secondaire(Icons.report_problem_outlined, l10n.reportIncident, _signalerIncident);

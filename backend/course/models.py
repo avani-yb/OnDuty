@@ -258,3 +258,36 @@ class Course(models.Model):
         self.statut = self.StatutCourse.PAYEE
         self.save(update_fields=["statut"])
         return True
+
+# Statuts pendant lesquels la position du transporteur est partagée
+# (décision du 04/10/2026 : du départ jusqu'à la livraison).
+STATUTS_SUIVI = (
+    Course.StatutCourse.DEPART,
+    Course.StatutCourse.EN_ROUTE,
+    Course.StatutCourse.ARRIVEE,
+)
+
+
+class PositionTransporteur(models.Model):
+    """Position GPS envoyée par le téléphone du transporteur pendant une course.
+
+    La dernière position est montrée aux clients de la course (expéditeur et
+    destinataire inscrit) ; la suite des positions forme le trajet parcouru,
+    utile en cas de litige. Purgée 1 mois après la fin de la course
+    (`manage.py purger_positions`).
+    """
+
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="positions")
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    precision_m = models.FloatField(null=True, blank=True, help_text="Précision annoncée par le GPS (mètres).")
+    date = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name = "Position du transporteur"
+        verbose_name_plural = "Positions du transporteur"
+        ordering = ["date"]
+        indexes = [models.Index(fields=["course", "date"])]
+
+    def __str__(self):
+        return f"Course {self.course_id} — {self.latitude}, {self.longitude} ({self.date:%d/%m %H:%M})"

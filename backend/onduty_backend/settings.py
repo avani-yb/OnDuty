@@ -87,6 +87,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "administration.gestion.compteurs_menu",
             ],
         },
     },
@@ -250,6 +251,10 @@ SMILE_ENV = os.getenv("SMILE_ENV", "sandbox").strip().lower()
 SMILE_CALLBACK_URL = os.getenv("SMILE_CALLBACK_URL", "")
 SMILE_TIMEOUT_SECONDS = float(os.getenv("SMILE_TIMEOUT_SECONDS") or 20)
 KYC_FOURNISSEUR = os.getenv("KYC_FOURNISSEUR", "manuel").strip().lower()
+
+# Firebase Cloud Messaging (notifications push) : chemin de la clé JSON du
+# compte de service, relatif au dossier backend (ex. secrets/firebase.json)
+FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH", "")
 
 # CamPay (paiements MTN MoMo / Orange Money)
 CAMPAY_USERNAME = os.getenv("CAMPAY_USERNAME", "")

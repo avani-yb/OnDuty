@@ -1,104 +1,91 @@
-"""Service d'envoi de notifications push via Firebase Cloud Messaging.
+"""Envoi des notifications push via Firebase Cloud Messaging (FCM).
 
-En production : utilise firebase-admin SDK.
-En développement : simule l'envoi (mock).
+Configuration : FIREBASE_CREDENTIALS_PATH dans le .env, chemin vers la clé
+JSON du compte de service Firebase (à placer dans backend/secrets/, dossier
+exclu du dépôt). Sans cette clé, les notifications restent enregistrées et
+visibles dans l'application, mais aucun push n'est envoyé (mode simulation).
 """
 
 import logging
+from pathlib import Path
 
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
+
+# Canal Android déclaré par l'application (notifications importantes).
+CANAL_ANDROID = "onduty_courses"
 
 
 class FCMService:
     """Service d'envoi de notifications via FCM."""
 
     def __init__(self):
-        self._app = None
         self._initialized = False
+        self._tente = False
 
     def _init_firebase(self):
-        """Initialise Firebase Admin SDK si les credentials sont disponibles."""
-        if self._initialized:
+        """Initialise Firebase Admin SDK une seule fois, si la clé est configurée."""
+        if self._initialized or self._tente:
             return
-
+        self._tente = True
+        chemin = getattr(settings, "FIREBASE_CREDENTIALS_PATH", "")
+        if not chemin:
+            logger.warning("FIREBASE_CREDENTIALS_PATH non configuré : push désactivé (simulation)")
+            return
+        chemin = Path(chemin)
+        if not chemin.is_absolute():
+            chemin = Path(settings.BASE_DIR) / chemin
         try:
             import firebase_admin
             from firebase_admin import credentials
 
-            # Chercher le fichier de credentials
-            cred_path = getattr(settings, "FIREBASE_CREDENTIALS_PATH", None)
-            if cred_path:
-                cred = credentials.Certificate(cred_path)
-                firebase_admin.initialize_app(cred)
-                self._initialized = True
-                logger.info("Firebase Admin SDK initialisé")
-            else:
-                logger.warning("FIREBASE_CREDENTIALS_PATH non configuré - mode simulation")
+            if not firebase_admin._apps:
+                firebase_admin.initialize_app(credentials.Certificate(str(chemin)))
+            self._initialized = True
+            logger.info("Firebase Admin SDK initialisé")
         except ImportError:
-            logger.warning("firebase-admin non installé - mode simulation")
+            logger.warning("firebase-admin non installé : push désactivé (simulation)")
         except Exception as e:
-            logger.error(f"Erreur initialisation Firebase: {e}")
+            logger.error(f"Erreur d'initialisation Firebase ({chemin}) : {e}")
+
+    @staticmethod
+    def _message(token, titre, corps, data):
+        from firebase_admin import messaging
+
+        return messaging.Message(
+            notification=messaging.Notification(title=titre, body=corps),
+            data={k: str(v) for k, v in (data or {}).items()},
+            android=messaging.AndroidConfig(
+                priority="high",
+                notification=messaging.AndroidNotification(channel_id=CANAL_ANDROID),
+            ),
+            token=token,
+        )
 
     def envoyer_notification(self, token: str, titre: str, corps: str, data: dict = None):
         """Envoie une notification à un token FCM unique.
 
-        Retourne (success: bool, message_id: str | None, error: str | None)
+        Retourne (succès, message_id, erreur, token_invalide).
         """
+        self._init_firebase()
         if not self._initialized:
-            self._init_firebase()
-
-        if not self._initialized:
-            # Mode simulation
             logger.info(f"[SIMULATION FCM] → {token[:20]}... | {titre}: {corps}")
-            return True, "simulated-message-id", None
+            return True, "simulated-message-id", None, False
+
+        from firebase_admin import messaging
 
         try:
-            from firebase_admin import messaging
-
-            message = messaging.Message(
-                notification=messaging.Notification(title=titre, body=corps),
-                data=data or {},
-                token=token,
-            )
-            response = messaging.send(message)
-            logger.info(f"Notification FCM envoyée: {response}")
-            return True, response, None
+            reponse = messaging.send(self._message(token, titre, corps, data))
+            return True, reponse, None, False
+        except (messaging.UnregisteredError, messaging.SenderIdMismatchError) as e:
+            # Application désinstallée ou token d'un autre projet : à désactiver.
+            return False, None, str(e), True
         except Exception as e:
-            logger.error(f"Erreur envoi FCM: {e}")
-            return False, None, str(e)
-
-    def envoyer_multicast(self, tokens: list, titre: str, corps: str, data: dict = None):
-        """Envoie une notification à plusieurs tokens (multicast).
-
-        Retourne (success_count: int, failure_count: int, results: list)
-        """
-        if not self._initialized:
-            self._init_firebase()
-
-        if not self._initialized:
-            # Mode simulation
-            logger.info(f"[SIMULATION FCM MULTICAST] → {len(tokens)} tokens | {titre}: {corps}")
-            return len(tokens), 0, [{"success": True, "message_id": f"sim-{i}"} for i in range(len(tokens))]
-
-        try:
-            from firebase_admin import messaging
-
-            message = messaging.MulticastMessage(
-                notification=messaging.Notification(title=titre, body=corps),
-                data=data or {},
-                tokens=tokens,
-            )
-            response = messaging.send_multicast(message)
-            logger.info(f"Multicast FCM: {response.success_count} succès, {response.failure_count} échecs")
-            return response.success_count, response.failure_count, response.responses
-        except Exception as e:
-            logger.error(f"Erreur multicast FCM: {e}")
-            return 0, len(tokens), [{"success": False, "error": str(e)}] * len(tokens)
+            logger.error(f"Erreur envoi FCM : {e}")
+            return False, None, str(e), False
 
 
-# Instance singleton
 fcm_service = FCMService()
 
 
@@ -106,8 +93,8 @@ def envoyer_notification_utilisateur(utilisateur, type_notification, titre, corp
     """Enregistre une notification pour l'utilisateur et l'envoie en push.
 
     La notification est TOUJOURS enregistrée en base : elle apparaît dans la
-    liste de l'application même sans push (Firebase non configuré, aucun
-    appareil enregistré). Le push est envoyé à tous les tokens actifs.
+    liste de l'application même sans push. Le push est envoyé à tous les
+    appareils actifs de l'utilisateur ; les tokens périmés sont désactivés.
 
     Retourne (nb_envois_reussis, nb_echecs).
     """
@@ -122,24 +109,26 @@ def envoyer_notification_utilisateur(utilisateur, type_notification, titre, corp
         data=data,
     )
 
-    tokens = list(
-        FCMToken.objects.filter(utilisateur=utilisateur, actif=True).values_list("token", flat=True)
-    )
+    tokens = list(FCMToken.objects.filter(utilisateur=utilisateur, actif=True))
     if not tokens:
         return 0, 0
 
-    success_count = 0
+    data_push = {**data, "notification_id": str(notification.pk), "type": type_notification}
+    succes = 0
     dernier_id = None
-    for token in tokens:
-        success, msg_id, error = fcm_service.envoyer_notification(token, titre, corps, data)
-        if success:
-            success_count += 1
+    for fcm_token in tokens:
+        ok, msg_id, erreur, invalide = fcm_service.envoyer_notification(fcm_token.token, titre, corps, data_push)
+        if ok:
+            succes += 1
             dernier_id = msg_id
         else:
-            logger.error(f"Échec envoi notification {notification.id}: {error}")
+            logger.error(f"Échec envoi notification {notification.id} : {erreur}")
+            if invalide:
+                fcm_token.actif = False
+                fcm_token.save(update_fields=["actif"])
 
-    if success_count:
+    if succes:
         notification.marquer_envoyee(dernier_id)
     else:
         notification.marquer_echec()
-    return success_count, len(tokens) - success_count
+    return succes, len(tokens) - succes

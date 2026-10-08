@@ -48,6 +48,7 @@ class CourseSerializer(serializers.ModelSerializer):
     details_visuels = serializers.SerializerMethodField()
     type_vehicule = serializers.SerializerMethodField()
     paiement = serializers.SerializerMethodField()
+    suivi_disponible = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
@@ -64,6 +65,7 @@ class CourseSerializer(serializers.ModelSerializer):
             "motif_annulation",
             "montant_convenu",
             "peut_confirmer_reception",
+            "suivi_disponible",
             "details_visuels",
             "type_vehicule",
             "paiement",
@@ -94,6 +96,11 @@ class CourseSerializer(serializers.ModelSerializer):
         if utilisateur.pk == obj.demande.destinataire_id:
             return "destinataire"
         return "admin" if getattr(utilisateur, "est_admin", False) else None
+
+    def get_suivi_disponible(self, obj):
+        from .models import STATUTS_SUIVI
+
+        return obj.statut in STATUTS_SUIVI
 
     def get_peut_confirmer_reception(self, obj):
         utilisateur = self._utilisateur()

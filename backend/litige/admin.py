@@ -1,57 +1,31 @@
 from django.contrib import admin
-from django.utils import timezone
 
 from .models import Incident, Litige
 
-STATUTS_OUVERTS = (Litige.StatutLitige.OUVERT, Litige.StatutLitige.EN_COURS_ANALYSE)
-
-
-def _resoudre(litige, decision):
-    litige.statut = Litige.StatutLitige.RESOLU
-    litige.decision_admin = decision
-    litige.date_resolution = timezone.now()
-    litige.save(update_fields=["statut", "decision_admin", "date_resolution"])
-
-    from notification.models import Notification
-    from notification.services.notifier import notifier
-
-    course = litige.course
-    for personne in (course.client, course.transporteur):
-        notifier(personne, Notification.TypeNotification.LITIGE, "Litige résolu",
-                 f"Course #{course.pk} : {decision}", course_id=course.pk)
+from . import services
 
 
 @admin.action(description="Résoudre : livraison validée, prix versé au transporteur")
 def resoudre_validation(modeladmin, request, queryset):
-    from paiement.services import escrow
-
     nombre = 0
-    for litige in queryset.filter(statut__in=STATUTS_OUVERTS).select_related("course"):
-        course = litige.course
-        course.mettre_a_jour_statut(course.StatutCourse.LIVREE, request.user)
-        paiement = getattr(course, "paiement", None)
-        if paiement is not None:
-            escrow.liberer(paiement)
-        _resoudre(litige, "Livraison validée : le prix de la course est versé au transporteur.")
-        nombre += 1
+    for litige in queryset.filter(statut__in=services.STATUTS_OUVERTS).select_related("course"):
+        try:
+            services.valider_livraison(litige, request.user)
+            nombre += 1
+        except services.ArbitrageImpossible as exc:
+            modeladmin.message_user(request, f"Litige {litige.pk} : {exc}", level="error")
     modeladmin.message_user(request, f"{nombre} litige(s) résolu(s) en faveur du transporteur.")
 
 
 @admin.action(description="Résoudre : course annulée, prix remboursé au client")
 def resoudre_remboursement(modeladmin, request, queryset):
-    from paiement.services import escrow
-
     nombre = 0
-    for litige in queryset.filter(statut__in=STATUTS_OUVERTS).select_related("course"):
-        course = litige.course
-        course.statut = course.StatutCourse.ANNULEE
-        course.motif_annulation = course.MotifAnnulation.ADMIN
-        course.save(update_fields=["statut", "motif_annulation"])
-        paiement = getattr(course, "paiement", None)
-        if paiement is not None:
-            escrow.rembourser(paiement)
-        _resoudre(litige, "Course annulée : le prix de la course est remboursé au client.")
-        nombre += 1
+    for litige in queryset.filter(statut__in=services.STATUTS_OUVERTS).select_related("course"):
+        try:
+            services.rembourser_client(litige, request.user)
+            nombre += 1
+        except services.ArbitrageImpossible as exc:
+            modeladmin.message_user(request, f"Litige {litige.pk} : {exc}", level="error")
     modeladmin.message_user(request, f"{nombre} litige(s) résolu(s) avec remboursement du client.")
 
 

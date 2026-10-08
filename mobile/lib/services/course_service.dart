@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:latlong2/latlong.dart';
+
 import '../services/auth_service.dart';
 
 final courseServiceProvider = Provider<CourseService>((ref) {
@@ -95,9 +97,15 @@ class CourseService {
     final response = await _dio.post('/courses/proposer/', data: {
       'demande_id': demandeId,
       'trajet_id': trajetId,
-      if (montant != null) 'montant': montant,
+      'montant': ?montant,
     });
     return Course.fromJson(response.data);
+  }
+
+  /// Dernière position du transporteur et trajet parcouru (du départ à la livraison).
+  Future<SuiviCourse> getSuivi(String courseId) async {
+    final response = await _dio.get('/courses/$courseId/suivi/');
+    return SuiviCourse.fromJson(response.data);
   }
 
   /// Le transporteur signale un incident (le client est notifié).
@@ -121,6 +129,9 @@ class Course {
   final String initieePar;
   final String motifAnnulation;
   final bool peutConfirmerReception;
+
+  /// Position du transporteur visible (du départ jusqu'à la livraison).
+  final bool suiviDisponible;
   final Map<String, dynamic>? detailsVisuels;
   final String? typeVehicule;
   final Map<String, dynamic>? paiement;
@@ -141,6 +152,7 @@ class Course {
     this.initieePar = 'client',
     this.motifAnnulation = '',
     this.peutConfirmerReception = false,
+    this.suiviDisponible = false,
     this.detailsVisuels,
     this.typeVehicule,
     this.paiement,
@@ -169,12 +181,37 @@ class Course {
       initieePar: (json['initiee_par'] as String?) ?? 'client',
       motifAnnulation: (json['motif_annulation'] as String?) ?? '',
       peutConfirmerReception: json['peut_confirmer_reception'] == true,
+      suiviDisponible: json['suivi_disponible'] == true,
       detailsVisuels: mapOuNull(json['details_visuels']),
       typeVehicule: json['type_vehicule'] as String?,
       paiement: mapOuNull(json['paiement']),
       dateCreation: json['date_creation'] != null ? DateTime.tryParse(json['date_creation']) : null,
       dateDepartReel: json['date_depart_reel'] != null ? DateTime.tryParse(json['date_depart_reel']) : null,
       dateLivraison: json['date_livraison'] != null ? DateTime.tryParse(json['date_livraison']) : null,
+    );
+  }
+}
+
+/// Suivi GPS d'une course : dernière position et trajet parcouru.
+class SuiviCourse {
+  final bool actif;
+  final LatLng? position;
+  final DateTime? dateDernierePosition;
+  final List<LatLng> trace;
+
+  SuiviCourse({required this.actif, this.position, this.dateDernierePosition, this.trace = const []});
+
+  factory SuiviCourse.fromJson(Map<String, dynamic> json) {
+    final derniere = json['derniere_position'] as Map<String, dynamic>?;
+    return SuiviCourse(
+      actif: json['actif'] == true,
+      position: derniere == null
+          ? null
+          : LatLng((derniere['latitude'] as num).toDouble(), (derniere['longitude'] as num).toDouble()),
+      dateDernierePosition: derniere == null ? null : DateTime.tryParse(derniere['date'] as String),
+      trace: ((json['trace'] as List?) ?? [])
+          .map((p) => LatLng((p[0] as num).toDouble(), (p[1] as num).toDouble()))
+          .toList(),
     );
   }
 }

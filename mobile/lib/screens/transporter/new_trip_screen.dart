@@ -1,3 +1,4 @@
+import '../../../widgets/localite_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -61,7 +62,7 @@ class _NewTripScreenState extends ConsumerState<NewTripScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await ref.read(tripServiceProvider).createTrip(
+      final trajet = await ref.read(tripServiceProvider).createTrip(
         origin: _originController.text.trim(),
         destination: _destinationController.text.trim(),
         departureDate: _selectedDate!,
@@ -72,7 +73,9 @@ class _NewTripScreenState extends ConsumerState<NewTripScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context).tripPublished), backgroundColor: AppColors.success),
         );
-        context.go('/trips');
+        // On remplace le formulaire par le trajet créé : le bouton retour
+        // ramène à l'écran d'origine (au lieu de fermer l'application).
+        context.pushReplacement('/trip/${trajet.id}');
       }
     } catch (e) {
       if (mounted) {
@@ -86,7 +89,7 @@ class _NewTripScreenState extends ConsumerState<NewTripScreen> {
               backgroundColor: AppColors.error,
             ),
           );
-          context.go('/become-transporter');
+          context.pushReplacement('/become-transporter');
           return;
         }
         ScaffoldMessenger.of(context).showSnackBar(
@@ -114,20 +117,14 @@ class _NewTripScreenState extends ConsumerState<NewTripScreen> {
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 16),
-            CustomTextField(
+            LocaliteField(
               controller: _originController,
               label: l10n.origin,
-              hint: 'Ex: Douala',
-              prefixIcon: Icons.location_on_outlined,
-              validator: (v) => v?.isEmpty ?? true ? l10n.fillAllFields : null,
             ),
             const SizedBox(height: 16),
-            CustomTextField(
+            LocaliteField(
               controller: _destinationController,
               label: l10n.destination,
-              hint: 'Ex: Yaoundé',
-              prefixIcon: Icons.location_on_outlined,
-              validator: (v) => v?.isEmpty ?? true ? l10n.fillAllFields : null,
             ),
             const SizedBox(height: 16),
             InkWell(

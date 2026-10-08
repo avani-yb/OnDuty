@@ -1,0 +1,124 @@
+/* Site d'administration OnDuty — palette marron / blanc / noir (AGENTS.md §4.1) */
+:root {
+  --brun: #6F4E37;
+  --brun-clair: #A97155;
+  --brun-fonce: #5D3A2A;
+  --surface: #F5F0EC;
+  --fond: #FFFFFF;
+  --texte: #1A1A1A;
+  --texte-2: #5C5C5C;
+  --bordure: #E8E0D8;
+  --succes: #2E7D32;
+  --erreur: #C62828;
+  --alerte: #F57F17;
+  --info: #1565C0;
+  --rayon: 12px;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  color: var(--texte);
+  background: var(--surface);
+}
+a { color: var(--brun); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1 { font-size: 22px; margin: 0 0 4px; }
+h2 { font-size: 16px; margin: 0 0 12px; }
+.sous-titre { color: var(--texte-2); margin: 0 0 20px; }
+
+/* Mise en page : menu à gauche, contenu à droite */
+.page { display: flex; min-height: 100vh; }
+.menu {
+  width: 230px; flex-shrink: 0; background: var(--brun-fonce); color: #fff;
+  display: flex; flex-direction: column; padding: 20px 12px;
+}
+.menu .marque { display: flex; align-items: center; gap: 10px; padding: 0 8px 24px; font-weight: 700; font-size: 18px; }
+.menu .marque img { height: 30px; filter: brightness(0) invert(1); }
+.menu a {
+  color: #fff; opacity: .85; padding: 10px 12px; border-radius: 8px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.menu a:hover { opacity: 1; background: rgba(255,255,255,.08); text-decoration: none; }
+.menu a.actif { opacity: 1; background: rgba(255,255,255,.16); font-weight: 600; }
+.menu .compteur { background: var(--alerte); color: #fff; border-radius: 10px; padding: 1px 8px; font-size: 12px; }
+.menu form { margin-top: auto; }
+.menu form button { width: 100%; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.3); }
+.contenu { flex: 1; padding: 28px 32px; min-width: 0; }
+
+/* Cartes et grilles */
+.carte { background: var(--fond); border: 1px solid var(--bordure); border-radius: var(--rayon); padding: 18px 20px; margin-bottom: 16px; }
+.grille { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); margin-bottom: 20px; }
+.deux-colonnes { display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+.chiffre { background: var(--fond); border: 1px solid var(--bordure); border-radius: var(--rayon); padding: 16px 18px; }
+.chiffre .valeur { font-size: 26px; font-weight: 700; color: var(--brun); }
+.chiffre .libelle { color: var(--texte-2); margin-top: 4px; }
+.chiffre .detail { color: var(--texte-2); font-size: 12px; margin-top: 6px; }
+.chiffre.alerte .valeur { color: var(--alerte); }
+
+/* Tableaux */
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--bordure); vertical-align: top; }
+th { color: var(--texte-2); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; }
+tr.cliquable:hover { background: var(--surface); cursor: pointer; }
+.vide { color: var(--texte-2); padding: 16px 0; }
+
+/* Lignes clé / valeur */
+dl.infos { display: grid; grid-template-columns: 170px 1fr; gap: 8px 12px; margin: 0; }
+dl.infos dt { color: var(--texte-2); }
+dl.infos dd { margin: 0; }
+
+/* Pastilles */
+.pastille { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; background: #eee; color: #444; }
+.pastille.vert { background: #E6F2E7; color: var(--succes); }
+.pastille.rouge { background: #F9E3E3; color: var(--erreur); }
+.pastille.orange { background: #FDEEDC; color: var(--alerte); }
+.pastille.brun { background: #F1E7E0; color: var(--brun); }
+.pastille.gris { background: #EEE; color: #666; }
+
+/* Formulaires et boutons */
+input[type=text], input[type=password], input[type=search], textarea, select {
+  width: 100%; padding: 9px 12px; border: 1px solid var(--bordure); border-radius: 8px; font: inherit; background: #fff;
+}
+textarea { min-height: 70px; resize: vertical; }
+button, .bouton {
+  display: inline-block; padding: 9px 16px; border-radius: 8px; border: 1px solid var(--brun);
+  background: var(--brun); color: #fff; font: inherit; font-weight: 600; cursor: pointer;
+}
+button:hover, .bouton:hover { filter: brightness(1.08); text-decoration: none; }
+button.secondaire, .bouton.secondaire { background: #fff; color: var(--brun); }
+button.danger { background: var(--erreur); border-color: var(--erreur); }
+button.succes { background: var(--succes); border-color: var(--succes); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-start; }
+.barre-filtres { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+.barre-filtres input[type=search] { max-width: 320px; }
+.onglets { display: flex; gap: 6px; }
+.onglets a { padding: 7px 14px; border-radius: 18px; background: #fff; border: 1px solid var(--bordure); color: var(--texte); }
+.onglets a.actif { background: var(--brun); color: #fff; border-color: var(--brun); }
+.pagination { display: flex; gap: 8px; align-items: center; margin-top: 12px; color: var(--texte-2); }
+
+/* Messages */
+.message { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; border: 1px solid; }
+.message.success { background: #E6F2E7; border-color: #B9DBBC; color: var(--succes); }
+.message.error { background: #F9E3E3; border-color: #EBBABA; color: var(--erreur); }
+.encadre { background: var(--surface); border-radius: 8px; padding: 12px 14px; }
+.encadre.danger { background: #FBEDED; }
+
+/* Carte GPS */
+#carte { height: 300px; border-radius: 8px; }
+
+/* Connexion */
+.connexion { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--brun-fonce); padding: 20px; }
+.connexion .carte { width: 100%; max-width: 380px; padding: 28px; }
+.connexion img { display: block; height: 70px; margin: 0 auto 12px; }
+.connexion label { display: block; margin: 14px 0 6px; font-weight: 600; }
+.connexion button { width: 100%; margin-top: 20px; padding: 11px; }
+
+@media (max-width: 900px) {
+  .page { flex-direction: column; }
+  .menu { width: 100%; }
+  .deux-colonnes { grid-template-columns: 1fr; }
+  .contenu { padding: 20px 16px; }
+}

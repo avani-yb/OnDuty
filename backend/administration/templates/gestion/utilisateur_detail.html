@@ -1,0 +1,109 @@
+{% extends "gestion/base.html" %}
+{% load gestion_tags %}
+{% block titre %}{{ u.prenom }} {{ u.nom }}{% endblock %}
+{% block contenu %}
+<p><a href="{% url 'gestion:utilisateurs' %}">← Utilisateurs</a></p>
+<h1>{{ u.prenom }} {{ u.nom }}</h1>
+<p class="sous-titre">
+  {% if supprime %}<span class="pastille gris">Compte supprimé (anonymisé)</span>
+  {% elif u.statut_compte == 'suspendu' %}<span class="pastille rouge">Bloqué</span>
+  {% else %}<span class="pastille vert">Actif</span>{% endif %}
+  {% if u.est_transporteur %}<span class="pastille brun">Transporteur</span>{% endif %}
+</p>
+
+<div class="deux-colonnes">
+  <div class="carte">
+    <h2>Profil</h2>
+    <dl class="infos">
+      <dt>Téléphone</dt><dd>{{ u.telephone }}</dd>
+      <dt>Email</dt><dd>{{ u.email|default:"—" }}</dd>
+      <dt>Mobile Money</dt><dd>{{ u.numero_versement }}</dd>
+      <dt>Inscrit le</dt><dd>{{ u.date_creation|date:"d/m/Y H:i" }}</dd>
+      <dt>Fiabilité</dt><dd>{{ u.score_fiabilite }}/100</dd>
+      <dt>Vérification CNI</dt>
+      <dd>{% if kyc %}<span class="pastille {{ kyc.statut|couleur }}">{{ kyc.get_statut_display }}</span>{% else %}Non soumise{% endif %}</dd>
+      {% if vehicule %}
+      <dt>Véhicule</dt>
+      <dd>{{ vehicule.get_type_vehicule_display }} {{ vehicule.marque }} {{ vehicule.modele }} · {{ vehicule.immatriculation }} · {{ vehicule.capacite_max_kg }} kg</dd>
+      {% endif %}
+    </dl>
+  </div>
+  <div class="carte">
+    <h2>Activité</h2>
+    <dl class="infos">
+      <dt>Demandes</dt><dd>{{ statistiques.demandes }}</dd>
+      <dt>Trajets publiés</dt><dd>{{ statistiques.trajets }}</dd>
+      <dt>Courses (expéditeur)</dt><dd>{{ statistiques.courses_client }}</dd>
+      <dt>Courses (transporteur)</dt><dd>{{ statistiques.courses_transporteur }}</dd>
+      <dt>Litiges déclarés</dt><dd>{{ statistiques.litiges }}</dd>
+    </dl>
+  </div>
+</div>
+
+{% if not supprime %}
+<div class="carte">
+  <h2>Actions</h2>
+  <div class="actions">
+    {% if u.statut_compte == 'suspendu' %}
+    <form method="post" action="{% url 'gestion:utilisateur_action' u.pk 'debloquer' %}">
+      {% csrf_token %}
+      <button type="submit" class="succes">Débloquer le compte</button>
+    </form>
+    {% else %}
+    <form method="post" action="{% url 'gestion:utilisateur_action' u.pk 'bloquer' %}"
+          onsubmit="return confirm('Bloquer ce compte ? L\'utilisateur sera déconnecté et ne pourra plus se connecter.')">
+      {% csrf_token %}
+      <button type="submit" class="secondaire">Bloquer le compte</button>
+    </form>
+    {% endif %}
+  </div>
+
+  <div class="encadre danger" style="margin-top:16px">
+    <strong>Supprimer le compte</strong>
+    {% if courses_en_cours %}
+      <p>Impossible pour l'instant : {{ courses_en_cours }} course(s) en cours.</p>
+    {% else %}
+      <p>
+        {% if historique %}
+          Ce compte a un historique (demandes, courses, paiements…) : il sera <strong>fermé et anonymisé</strong>,
+          l'historique étant conservé pour l'audit et la comptabilité.
+        {% else %}
+          Ce compte n'a aucune activité : il sera <strong>définitivement supprimé</strong>.
+        {% endif %}
+        Pour confirmer, recopiez le numéro <strong>{{ u.telephone }}</strong>.
+      </p>
+      <form method="post" action="{% url 'gestion:utilisateur_action' u.pk 'supprimer' %}" class="actions">
+        {% csrf_token %}
+        <input type="text" name="confirmation" placeholder="{{ u.telephone }}" style="max-width:220px" required>
+        <button type="submit" class="danger">Supprimer</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+<div class="carte">
+  <h2>Dernières courses</h2>
+  {% if courses %}
+  <div style="overflow-x:auto">
+  <table>
+    <thead><tr><th>N°</th><th>Trajet</th><th>Rôle</th><th>Prix</th><th>Statut</th><th>Date</th></tr></thead>
+    <tbody>
+    {% for c in courses %}
+      <tr class="cliquable" onclick="location.href='{% url 'gestion:course' c.pk %}'">
+        <td><a href="{% url 'gestion:course' c.pk %}">#{{ c.pk }}</a></td>
+        <td>{{ c.demande.origine }} → {{ c.demande.destination }}</td>
+        <td>{% if c.client_id == u.pk %}Expéditeur{% else %}Transporteur{% endif %}</td>
+        <td>{{ c.montant_convenu|fcfa }}</td>
+        <td><span class="pastille {{ c.statut|couleur }}">{{ c.get_statut_display }}</span></td>
+        <td>{{ c.date_creation|date:"d/m/Y" }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <p class="vide">Aucune course.</p>
+  {% endif %}
+</div>
+{% endblock %}

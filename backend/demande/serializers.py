@@ -1,6 +1,8 @@
 from django.conf import settings
 from rest_framework import serializers
 
+from onduty_backend import localites
+
 from .models import ContestationRejet, ControleIA, Demande
 
 
@@ -127,6 +129,12 @@ class DemandeSerializer(serializers.ModelSerializer):
             instance.video_url = instance.video.url
             instance.save(update_fields=["video_url"])
         return instance
+
+    def validate_origine(self, value):
+        return localites.valider(value)
+
+    def validate_destination(self, value):
+        return localites.valider(value)
 
     def validate_poids_estime_kg(self, value):
         if value <= 0:

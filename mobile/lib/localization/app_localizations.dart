@@ -71,6 +71,18 @@ abstract class AppLocalizations {
   String get retry;
   String get aiRejectedTitle;
   String get aiRejectedHint;
+  String get positionJustNow;
+  String get waitingFirstPosition;
+  String get locationSharedTitle;
+  String get locationSharedBody;
+  String get locationPermissionTitle;
+  String get locationPermissionBody;
+  String get allow;
+  String get locationPermissionDenied;
+  String get cityHint;
+  String get chooseCityFromList;
+  String positionMinutesAgo(String minutes);
+  String positionHoursAgo(String hours);
   String get courseAwaitingYourDecision;
   String get courseAwaitingTransporter;
   String get courseProposalSent;

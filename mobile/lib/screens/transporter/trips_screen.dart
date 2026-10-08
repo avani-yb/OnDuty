@@ -7,7 +7,7 @@ import '../../services/trip_service.dart';
 import '../../theme/app_colors.dart';
 import '../../utils/error_helper.dart';
 import '../../utils/formatters.dart';
-import '../../widgets/common/vehicle_icon.dart';
+import '../../widgets/common/vehicle_card.dart';
 
 /// Trajets du transporteur, dans l'ordre fourni par le serveur :
 /// actifs (vert) puis en cours aujourd'hui (orange) puis passés (rouge).
@@ -79,34 +79,13 @@ class _TripsScreenState extends ConsumerState<TripsScreen> {
           itemBuilder: (context, index) {
             final trip = _trips[index];
             final couleur = couleurEtatTrajet(trip.etat);
-            return Card(
-              margin: const EdgeInsets.only(bottom: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: couleur.withValues(alpha: 0.5)),
-              ),
-              child: ListTile(
-                onTap: () => _ouvrir('/trip/${trip.id}'),
-                leading: VehicleBadge(typeVehicule: trip.typeVehicule, color: couleur),
-                title: Text(
-                  '${trip.origin} → ${trip.destination}',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                subtitle: Text(
-                  '${formatDate(trip.departureDate)} · ${l10n.remainingKg(trip.capaciteRestanteKg.toStringAsFixed(0))}',
-                ),
-                trailing: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: couleur.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    libelleEtatTrajet(l10n, trip.etat),
-                    style: TextStyle(color: couleur, fontWeight: FontWeight.w600, fontSize: 11),
-                  ),
-                ),
-              ),
+            return CarteVehicule(
+              typeVehicule: trip.typeVehicule,
+              couleur: couleur,
+              titre: '${trip.origin} → ${trip.destination}',
+              sousTitre: '${formatDate(trip.departureDate)} · ${l10n.remainingKg(trip.capaciteRestanteKg.toStringAsFixed(0))}',
+              trailing: PastilleStatut(texte: libelleEtatTrajet(l10n, trip.etat), couleur: couleur),
+              onTap: () => _ouvrir('/trip/${trip.id}'),
             );
           },
         ),

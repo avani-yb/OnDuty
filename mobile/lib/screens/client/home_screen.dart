@@ -4,10 +4,13 @@ import 'package:go_router/go_router.dart';
 
 import '../../localization/app_localizations.dart';
 import '../../theme/app_colors.dart';
+import '../../services/auth_service.dart';
 import '../../services/course_service.dart';
+import '../../services/gps_service.dart';
+import '../../services/push_service.dart';
 import '../../services/notification_service.dart';
 import '../../utils/formatters.dart';
-import '../../widgets/common/vehicle_icon.dart';
+import '../../widgets/common/vehicle_card.dart';
 import 'activity_screen.dart';
 import '../transporter/trips_screen.dart';
 import '../shared/profile_screen.dart';
@@ -31,6 +34,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     _loadProfile();
+    // Après connexion : ce téléphone reçoit les notifications push, et le
+    // suivi GPS reprend si le transporteur a une course en cours de transport.
+    final auth = ref.read(authServiceProvider);
+    PushService.enregistrerAppareil(auth);
+    GpsService.demarrerSiNecessaire(auth);
   }
 
   Future<void> _loadProfile() async {
@@ -190,11 +198,9 @@ class _HomeTabState extends ConsumerState<_HomeTab> {
           padding: const EdgeInsets.all(16),
           children: [
             // Salutation, nouvelle expédition et nouveau trajet : même largeur.
-            Card(
-              margin: EdgeInsets.zero,
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+              child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -210,7 +216,6 @@ class _HomeTabState extends ConsumerState<_HomeTab> {
                     ),
                   ],
                 ),
-              ),
             ),
             const SizedBox(height: 12),
             _ActionCard(
@@ -246,12 +251,15 @@ class _HomeTabState extends ConsumerState<_HomeTab> {
                 ),
               )
             else
-              ..._recentCourses.map((course) => _RecentActivityCard(
+              ..._recentCourses.map((course) => CarteVehicule(
                     typeVehicule: course.typeVehicule,
-                    title: '${course.demande['origine'] ?? ''} → ${course.demande['destination'] ?? ''}',
-                    subtitle: '${course.demande['poids_estime_kg'] ?? '?'} kg',
-                    status: libelleStatutCourse(l10n, course.statut, role: course.role),
-                    color: couleurStatutCourse(course.statut),
+                    couleur: couleurStatutCourse(course.statut),
+                    titre: '${course.demande['origine'] ?? ''} → ${course.demande['destination'] ?? ''}',
+                    sousTitre: '${course.demande['poids_estime_kg'] ?? '?'} kg',
+                    trailing: PastilleStatut(
+                      texte: libelleStatutCourse(l10n, course.statut, role: course.role),
+                      couleur: couleurStatutCourse(course.statut),
+                    ),
                     onTap: () => _ouvrir('/shipment/${course.id}'),
                   )),
           ],
@@ -318,48 +326,6 @@ class _ActionCard extends StatelessWidget {
               ),
               Icon(Icons.chevron_right, color: color),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _RecentActivityCard extends StatelessWidget {
-  final String? typeVehicule;
-  final String title;
-  final String subtitle;
-  final String status;
-  final Color color;
-  final VoidCallback? onTap;
-
-  const _RecentActivityCard({
-    required this.typeVehicule,
-    required this.title,
-    required this.subtitle,
-    required this.status,
-    required this.color,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        onTap: onTap,
-        leading: VehicleBadge(typeVehicule: typeVehicule, color: color),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle: Text(subtitle),
-        trailing: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Text(
-            status,
-            style: TextStyle(color: color, fontWeight: FontWeight.w600, fontSize: 12),
           ),
         ),
       ),

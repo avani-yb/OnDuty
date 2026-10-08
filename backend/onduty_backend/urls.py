@@ -11,8 +11,13 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
+from .views import liste_localites
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    # Site d'administration OnDuty (compte admin uniquement)
+    path("gestion/", include("administration.urls_gestion")),
+    path("api/localites/", liste_localites, name="localites"),
 
     # Racine de l'API (socle)
     path("api/", include("comptes.urls")),

@@ -1,0 +1,26 @@
+{% load static %}<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connexion — Administration OnDuty</title>
+  <link rel="stylesheet" href="{% static 'gestion/gestion.css' %}">
+</head>
+<body>
+<div class="connexion">
+  <form class="carte" method="post">
+    {% csrf_token %}
+    <img src="{% static 'gestion/logo.png' %}" alt="OnDuty">
+    <h1 style="text-align:center">Administration</h1>
+    <p class="sous-titre" style="text-align:center">Réservé au compte administrateur</p>
+    {% if erreur %}<div class="message error">{{ erreur }}</div>{% endif %}
+    <input type="hidden" name="suivant" value="{{ suivant }}">
+    <label for="telephone">Téléphone</label>
+    <input type="text" id="telephone" name="telephone" autocomplete="username" required autofocus>
+    <label for="mot_de_passe">Mot de passe</label>
+    <input type="password" id="mot_de_passe" name="mot_de_passe" autocomplete="current-password" required>
+    <button type="submit">Se connecter</button>
+  </form>
+</div>
+</body>
+</html>

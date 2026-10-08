@@ -78,7 +78,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             children: [
               const SizedBox(height: 20),
               Image.asset(
-                'assets/images/logo.png',
+                Theme.of(context).brightness == Brightness.dark
+                    ? 'assets/images/logo_sombre.png'
+                    : 'assets/images/logo_transparent.png',
                 height: 100,
               ),
               const SizedBox(height: 24),

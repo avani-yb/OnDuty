@@ -264,6 +264,13 @@ class CourseViewSet(viewsets.ModelViewSet):
             "Confirmez sa réception pour libérer le paiement du transporteur.",
         )
 
+    @action(detail=True, methods=["get"])
+    def suivi(self, request, pk=None):
+        """Dernière position du transporteur et trajet parcouru (du départ à la livraison)."""
+        from .suivi import donnees_suivi
+
+        return Response(donnees_suivi(self.get_object()))
+
     @action(detail=True, methods=["post"])
     def confirmer_reception(self, request, pk=None):
         """Expéditeur ou destinataire inscrit : réception confirmée → course

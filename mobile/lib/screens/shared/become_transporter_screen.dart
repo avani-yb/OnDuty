@@ -51,7 +51,7 @@ class _BecomeTransporterScreenState extends ConsumerState<BecomeTransporterScree
       final vehicule = await ref.read(vehiculeServiceProvider).getMonVehicule();
       if (mounted && vehicule != null) {
         // Le rôle Transporteur est déjà actif : rien à faire ici.
-        context.go('/trips');
+        context.pushReplacement('/trips');
         return;
       }
     } catch (_) {
@@ -77,7 +77,7 @@ class _BecomeTransporterScreenState extends ConsumerState<BecomeTransporterScree
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context).vehicleAdded), backgroundColor: AppColors.success),
         );
-        context.go('/new-trip');
+        context.pushReplacement('/new-trip');
       }
     } catch (e) {
       if (mounted) {

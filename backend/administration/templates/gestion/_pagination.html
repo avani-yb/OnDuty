@@ -1,0 +1,7 @@
+{% if page.paginator.num_pages > 1 %}
+<div class="pagination">
+  {% if page.has_previous %}<a class="bouton secondaire" href="?{% if recherche %}q={{ recherche|urlencode }}&{% endif %}filtre={{ filtre }}&page={{ page.previous_page_number }}">Précédent</a>{% endif %}
+  <span>Page {{ page.number }} sur {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}<a class="bouton secondaire" href="?{% if recherche %}q={{ recherche|urlencode }}&{% endif %}filtre={{ filtre }}&page={{ page.next_page_number }}">Suivant</a>{% endif %}
+</div>
+{% endif %}

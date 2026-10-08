@@ -312,5 +312,17 @@
   "priceInfoCarrierPickedYou": "This carrier picked your request (you offered {price}). Accept to go to payment, or refuse.",
   "priceInfoCarrierCounter": "The carrier proposes this price (you offered {price}). Do you accept?",
   "recipientIsMember": "Recipient registered on OnDuty: {name}",
-  "helloName": "Hello {name}"
+  "helloName": "Hello {name}",
+  "positionJustNow": "Position just now",
+  "waitingFirstPosition": "The carrier has left: their position will appear as soon as their phone sends it.",
+  "locationSharedTitle": "Location shared",
+  "locationSharedBody": "The client follows your location until delivery.",
+  "locationPermissionTitle": "Share your location",
+  "locationPermissionBody": "During transport, the client sees your location on a map. For this to work with your phone in your pocket, choose \"Allow all the time\" when asked.",
+  "allow": "Allow",
+  "locationPermissionDenied": "Background location not allowed: it will only be sent while the app is open. You can change this in your phone settings.",
+  "cityHint": "Type the first letters (e.g. Ya)",
+  "chooseCityFromList": "Choose a place from the list",
+  "positionMinutesAgo": "Position {minutes} min ago",
+  "positionHoursAgo": "Position {hours} h ago"
 }

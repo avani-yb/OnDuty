@@ -1,0 +1,40 @@
+{% extends "gestion/base.html" %}
+{% load gestion_tags %}
+{% block titre %}Litiges{% endblock %}
+{% block contenu %}
+<h1>Litiges</h1>
+<p class="sous-titre">Les fonds de la course restent bloqués tant que le litige n'est pas tranché.</p>
+
+<div class="barre-filtres">
+  <div class="onglets">
+    <a href="?filtre=a_traiter" class="{% if filtre == 'a_traiter' %}actif{% endif %}">À traiter</a>
+    <a href="?filtre=resolus" class="{% if filtre == 'resolus' %}actif{% endif %}">Résolus</a>
+    <a href="?filtre=tous" class="{% if filtre == 'tous' %}actif{% endif %}">Tous</a>
+  </div>
+</div>
+
+<div class="carte">
+  {% if page.object_list %}
+  <div style="overflow-x:auto">
+  <table>
+    <thead><tr><th>N°</th><th>Course</th><th>Déclaré par</th><th>Motif</th><th>Statut</th><th>Date</th></tr></thead>
+    <tbody>
+    {% for l in page.object_list %}
+      <tr class="cliquable" onclick="location.href='{% url 'gestion:litige' l.pk %}'">
+        <td><a href="{% url 'gestion:litige' l.pk %}">#{{ l.pk }}</a></td>
+        <td>#{{ l.course_id }} · {{ l.course.demande.origine }} → {{ l.course.demande.destination }}</td>
+        <td>{{ l.declarant.prenom }} {{ l.declarant.nom }}</td>
+        <td>{{ l.motif|truncatechars:70 }}</td>
+        <td><span class="pastille {{ l.statut|couleur }}">{{ l.get_statut_display }}</span></td>
+        <td>{{ l.date_declaration|date:"d/m/Y H:i" }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% include "gestion/_pagination.html" %}
+  {% else %}
+  <p class="vide">Aucun litige.</p>
+  {% endif %}
+</div>
+{% endblock %}

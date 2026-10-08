@@ -1,0 +1,8 @@
+{% extends "gestion/base.html" %}
+{% block titre %}Course #{{ course.pk }}{% endblock %}
+{% block contenu %}
+<p><a href="{% url 'gestion:tableau_de_bord' %}">← Tableau de bord</a></p>
+<h1>Course #{{ course.pk }}</h1>
+<p class="sous-titre">{{ demande.origine }} → {{ demande.destination }}</p>
+{% include "gestion/_fiche_course.html" %}
+{% endblock %}

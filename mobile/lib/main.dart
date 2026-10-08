@@ -6,9 +6,19 @@ import 'theme/app_theme.dart';
 import 'theme/theme_provider.dart';
 import 'localization/app_localizations.dart';
 import 'routing/app_router.dart';
+import 'services/gps_service.dart';
+import 'services/push_service.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Notifications (push si Firebase est configuré) et suivi GPS : un échec
+  // ne doit jamais empêcher l'application de démarrer.
+  try {
+    await PushService.initialiser();
+    await GpsService.configurer();
+  } catch (e) {
+    debugPrint('Initialisation des services : $e');
+  }
   runApp(const ProviderScope(child: OnDutyApp()));
 }
 
@@ -19,6 +29,8 @@ class OnDutyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final themeMode = ref.watch(themeProvider);
+    // Toucher une notification ouvre la course ou la demande concernée.
+    PushService.ouvrirRoute = (route) => router.push(route);
 
     return MaterialApp.router(
       title: 'OnDuty',
